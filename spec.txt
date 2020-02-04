@@ -1,0 +1,84 @@
+---------
+COMMENTS:
+---------
+// here is a comment 
+
+---------
+VARIABLES:
+---------
+let a = 5
+a = 6
+
+-------------
+FLOW CONTROL:
+-------------
+if (condition 1) {
+  ...1
+} else if (condition 2) {
+  ...2
+} else {
+  ...3
+}
+
+loop (declare_var (?), condition, step (?)) {
+  ...
+}
+
+-------
+OTHERS:
+-------
+break;
+return a;
+return;
+
+---------
+FUNCTIONS:
+---------
+let my_func = function (arg1, arg2, arg3) {
+  ...
+}
+my_func(arg1, arg2, arg3)
+
+----------------
+FUNCTION PIPING:
+----------------
+f(arg1, arg2, arg3) into g
+
+is equivalent to:
+
+g(f(arg1, arg2, arg3))
+
+AND
+
+(f(a), 3, g(b)) into c 
+
+is equivalent to:
+
+c(f(a), 3, g(b))
+
+AND
+
+f(3) into g into h 
+
+is equivalent to:
+
+h(g(f(3)))
+
+-----
+PRINT
+-----
+print "Hello world"
+
+--------------
+OBJECTS/ARRAYS
+--------------
+a = {
+  "key": value
+}
+a.key
+
+b = {
+  1: value
+  2: value
+}
+b.1 = b.2
