@@ -27,39 +27,35 @@ class Tokens:
   DIV = 25
   EXP = 26
   INTO = 27
+  PIPE = 28
+  DIGIT = 29
 
   LEXEMES = {
-    COMMENT: "//",
-    DECLARE_VAR: "let",
-    EQ: "=",
-    IF_STATEMENT: "if",
-    LBRAC: "(",
-    RBRAC: ")",
-    LCURLY: "{",
-    RCURLY: "}",
-    LOOP: "loop",
-    COMMA: ",",
-    DOT: ".",
-    BREAK_LOOP: "break",
-    RETURN: "return",
-    DECLARE_FUNC: "function",
-    PRINT: "print",
-    COLON: ":",
-    AND: "and",
-    OR: "or",
-    GT: ">",
-    LT: "<",
-    PLUS: "+",
-    MINUS: "-",
-    MULT: "*",
-    DIV: "/",
-    EXP: "^",
-    INTO: "into"
+    "//": COMMENT,
+    "let": DECLARE_VAR,
+    "=": EQ,
+    "if": IF_STATEMENT,
+    "(": LBRAC,
+    ")": RBRAC,
+    "{": LCURLY,
+    "}": RCURLY,
+    "loop": LOOP,
+    ",": COMMA,
+    ".": DOT,
+    "break": BREAK_LOOP,
+    "return": RETURN,
+    "function": DECLARE_FUNC,
+    "print": PRINT,
+    ":": COLON,
+    "and": AND,
+    "or": OR,
+    ">": GT,
+    "<": LT,
+    "+": PLUS,
+    "-": MINUS,
+    "*": MULT,
+    "/": DIV,
+    "^": EXP,
+    "into": INTO,
+    "pipe": PIPE,
   }
-
-def main():
-  for k in Tokens.LEXEMES:
-    print(Tokens.LEXEMES[Tokens.BREAK_LOOP])
-
-if __name__ == "__main__":
-  main()
