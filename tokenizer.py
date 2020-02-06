@@ -10,10 +10,12 @@ def tokenize(program):
     if token in Tokens.LEXEMES:
       tokenized_program.append((token, Tokens.LEXEMES[token]))
     elif len(token) == 1:
+      #Either digit or ID
       tokenized_program.append(
         (token, Tokens.DIGIT if token.isdigit() else Tokens.ID)
-      ) #Either digit or ID
+      )
     elif not token[0].isdigit():
       tokenized_program.append((token, Tokens.ID))
     else:
       raise TokenException("Token Error: " + token + " is not a valid token.")
+  return tokenized_program

@@ -8,9 +8,11 @@ def main():
       program.append(word)
 
   try:
-    tokenize(program)
+    tokenized = tokenize(program)
   except TokenException as e:
     print(e.message)
+
+  print(tokenized)
 
 if __name__ == "__main__":
   main()

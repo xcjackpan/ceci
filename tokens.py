@@ -2,7 +2,7 @@ class Tokens:
   ID = 0
   COMMENT = 1
   DECLARE_VAR = 2
-  EQ = 3
+  BECOMES = 3
   IF_STATEMENT = 4
   LBRAC = 5
   RBRAC = 6
@@ -29,11 +29,17 @@ class Tokens:
   INTO = 27
   PIPE = 28
   DIGIT = 29
+  EQ = 30
+  NEQ = 31
+  GEQ = 32
+  LEQ = 33
+  FALSE = 34
+  TRUE = 35
 
   LEXEMES = {
     "//": COMMENT,
     "let": DECLARE_VAR,
-    "=": EQ,
+    "=": BECOMES,
     "if": IF_STATEMENT,
     "(": LBRAC,
     ")": RBRAC,
@@ -47,8 +53,8 @@ class Tokens:
     "function": DECLARE_FUNC,
     "print": PRINT,
     ":": COLON,
-    "and": AND,
-    "or": OR,
+    "&&": AND,
+    "||": OR,
     ">": GT,
     "<": LT,
     "+": PLUS,
@@ -58,4 +64,10 @@ class Tokens:
     "^": EXP,
     "into": INTO,
     "pipe": PIPE,
+    "==": EQ,
+    "!==": NEQ,
+    ">=": GEQ,
+    "<=": LEQ,
+    "False": FALSE,
+    "True": TRUE,
   }
