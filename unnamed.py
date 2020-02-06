@@ -7,7 +7,6 @@ def main():
     for word in line.split():
       program.append(word)
 
-  print(program)
   try:
     tokenize(program)
   except TokenException as e:
