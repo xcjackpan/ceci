@@ -1,0 +1,38 @@
+program -> statements statement
+
+statements -> statements statement
+statements ->
+
+statement -> IF LBRAC test RBRAC LCURL statements RCURL
+test -> EXPR GT EXPR
+test -> EXPR LT EXPR
+test -> EXPR AND EXPR
+test -> EXPR OR EXPR
+test -> EXPR IS EXPR
+test -> NOT test
+
+statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
+looprules -> test
+looprules -> decl COMMA test COMMA assignment
+
+statement -> PRINT expr
+
+statement -> assignment
+assignment -> ID BECOMES EXPR
+
+statement -> decl
+decl -> LET ID BECOMES EXPR
+
+EXPR -> EXPR PLUS FACTOR
+EXPR -> EXPR MINUS FACTOR
+EXPR -> FACTOR
+
+FACTOR -> FACTOR MULT POW
+FACTOR -> FACTOR DIV POW
+FACTOR -> POW
+
+POW -> POW EXP TERM
+POW -> TERM
+
+TERM -> ID
+TERM -> DIGIT
