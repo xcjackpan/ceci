@@ -1,6 +1,6 @@
-program -> statements statement
+program -> statement statements
 
-statements -> statements statement
+statements -> statement statements
 statements ->
 
 statement -> IF LBRAC test RBRAC LCURL statements RCURL
@@ -18,21 +18,33 @@ looprules -> decl COMMA test COMMA assignment
 statement -> PRINT expr
 
 statement -> assignment
-assignment -> ID BECOMES EXPR
+assignment -> ID BECOMES expr
+
+statement -> BREAK
+
+statement -> RETURN expr
 
 statement -> decl
-decl -> LET ID BECOMES EXPR
+decl -> LET ID BECOMES expr
 
-EXPR -> EXPR PLUS FACTOR
-EXPR -> EXPR MINUS FACTOR
-EXPR -> FACTOR
+expr -> FUNC
+FUNC -> ID LBRAC params RBRAC
 
-FACTOR -> FACTOR MULT POW
-FACTOR -> FACTOR DIV POW
-FACTOR -> POW
+params -> expr COMMA params
+params ->
 
-POW -> POW EXP TERM
-POW -> TERM
+func -> func INTO func
 
-TERM -> ID
-TERM -> DIGIT
+expr -> expr PLUS factor
+expr -> expr MINUS factor
+expr -> factor
+
+factor -> factor MULT pow
+factor -> factor DIV pow
+factor -> pow
+
+pow -> pow EXP term
+pow -> term
+
+term -> ID
+term -> DIGIT

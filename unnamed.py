@@ -1,5 +1,6 @@
 import sys
 from tokenizer import *
+from interpreter import *
 
 def main():
   program = []
@@ -12,7 +13,8 @@ def main():
   except TokenException as e:
     print(e.message)
 
-  print(tokenized)
+  interpreter = Interpreter(tokenized)
+  interpreter.print_tokens()
 
 if __name__ == "__main__":
   main()
