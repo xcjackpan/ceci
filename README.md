@@ -1,4 +1,8 @@
-# problems i face and things i learn along the way
+These are some notes I'm keeping for stuff I learn along the way.
+
+## First, the elephant in the room
+This is mostly a learning exercise/for fun so pardon my use of an interpreted language to build
+and interpreted language.
 
 ## Order of operations
 The terminals that are "deeper" down a parse tree are evaluated first. By having higher-precedence operations
