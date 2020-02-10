@@ -1,4 +1,4 @@
-program -> statement statements
+program -> BOF statement statements EOF
 
 statements -> statement statements
 statements ->

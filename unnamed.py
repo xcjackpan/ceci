@@ -1,6 +1,6 @@
 import sys
 from tokenizer import *
-from interpreter import *
+from parsetree import *
 
 def main():
   program = []
@@ -13,8 +13,11 @@ def main():
   except TokenException as e:
     print(e.message)
 
-  interpreter = Interpreter(tokenized)
-  interpreter.print_tokens()
+  parsetree = ParseTree(tokenized)
+  parsetree.print_tokens()
+
+  parsed = parsetree.build()
+  parsed.print()
 
 if __name__ == "__main__":
   main()
