@@ -4,19 +4,19 @@ from cfg import *
 class Node:
   def __init__(self, name, token=None):
     self.children = []
-    self.name = name
+    self.type = name
     self.token = token
 
   def add_child(self, child):
     self.children.append(child)
 
   def print(self):
+    if self.token is not None:
+      print(self.type, self.token.lexeme, end=" ")
+    else:
+      print(self.type)
     for child in self.children:
       child.print()
-    if self.token is not None:
-      print(self.name, self.token.lexeme)
-    else:
-      print(self.name)
 
 class ParseException(Exception):
   def __init__(self, message):
@@ -56,23 +56,8 @@ class ParseTree:
     raise ParseException("Munch failed at" + self._curr_token().lexeme)
 
   def _expr(self):
-    #expr -> factor PLUS expr
-    #expr -> factor MINUS expr
-    #expr -> factor
-
-    #factor -> pow MULT factor
-    #factor -> pow DIV factor
-    #factor -> pow
-
-    #pow -> term EXP pow
-    #pow -> term
-
-    #term -> ID
-    #term -> DIGIT
-
     retnode = Node(Nonterminals.EXPR)
-    left = self._factor()
-    retnode.add_child(left)
+    retnode.add_child(self._factor())
     try:
       op = self._munch([Tokens.PLUS, Tokens.MINUS])
     except ParseException:
@@ -84,8 +69,7 @@ class ParseTree:
 
   def _factor(self):
     retnode = Node(Nonterminals.FACTOR)
-    left = self._pow()
-    retnode.add_child(left)
+    retnode.add_child(self._pow())
     try:
       op = self._munch([Tokens.MULT, Tokens.DIV])
     except ParseException:
@@ -97,8 +81,7 @@ class ParseTree:
 
   def _pow(self):
     retnode = Node(Nonterminals.POW)
-    left = self._term()
-    retnode.add_child(left)
+    retnode.add_child(self._term())
     try:
       op = self._munch([Tokens.EXP])
     except ParseException:
@@ -109,6 +92,6 @@ class ParseTree:
     return retnode
 
   def _term(self):
-    term = self._munch([Tokens.ID, Tokens.DIGIT])
+    term = self._munch([Tokens.ID, Tokens.NUM])
     return Node(term.token, term)
   

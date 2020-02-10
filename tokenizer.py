@@ -28,7 +28,7 @@ class Tokens:
   EXP = 26
   INTO = 27
   PIPE = 28
-  DIGIT = 29
+  NUM = 29
   EQ = 30
   NEQ = 31
   GEQ = 32
@@ -83,9 +83,11 @@ class Token:
       self.token = Tokens.LEXEMES[lexeme]
     elif len(lexeme) == 1:
       #Either digit or ID
-      self.token = Tokens.DIGIT if lexeme.isdigit() else Tokens.ID
+      self.token = Tokens.NUM if lexeme.isdigit() else Tokens.ID
     elif not lexeme[0].isdigit():
       self.token = Tokens.ID
+    elif lexeme.isdigit():
+      self.token = Tokens.NUM
     else:
       raise TokenException("Token Error: " + lexeme + " is not a valid token.")
 
