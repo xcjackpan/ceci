@@ -15,7 +15,7 @@ def main():
   #parsetree.print_tokens()
 
   parsed = parsetree.build()
-  parsed.print()
+  #parsed.print()
 
   print(evaluate(parsed))
 

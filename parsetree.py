@@ -8,7 +8,8 @@ class Node:
     self.token = token
 
   def add_child(self, child):
-    self.children.append(child)
+    if child is not None:
+      self.children.append(child)
 
   def print(self):
     if self.token is not None:
@@ -58,37 +59,55 @@ class ParseTree:
   def _expr(self):
     retnode = Node(Nonterminals.EXPR)
     retnode.add_child(self._factor())
+    retnode.add_child(self._exprF())
+    return retnode
+
+  def _exprF(self):
     try:
       op = self._munch([Tokens.PLUS, Tokens.MINUS])
     except ParseException:
-      return retnode
-      
+      return None
+
+    retnode = Node(Nonterminals.EXPRF)
     retnode.add_child(Node(op.token, op))
-    retnode.add_child(self._expr())
+    retnode.add_child(self._factor())
+    retnode.add_child(self._exprF())
     return retnode
 
   def _factor(self):
     retnode = Node(Nonterminals.FACTOR)
     retnode.add_child(self._pow())
+    retnode.add_child(self._factorF())
+    return retnode
+
+  def _factorF(self):
     try:
       op = self._munch([Tokens.MULT, Tokens.DIV])
     except ParseException:
-      return retnode
+      return None
 
+    retnode = Node(Nonterminals.FACTORF)
     retnode.add_child(Node(op.token, op))
-    retnode.add_child(self._factor())
+    retnode.add_child(self._pow())
+    retnode.add_child(self._factorF())
     return retnode
 
   def _pow(self):
     retnode = Node(Nonterminals.POW)
     retnode.add_child(self._term())
+    retnode.add_child(self._powF())
+    return retnode
+
+  def _powF(self):
     try:
       op = self._munch([Tokens.EXP])
     except ParseException:
-      return retnode
+      return None
 
+    retnode = Node(Nonterminals.POWF)
     retnode.add_child(Node(op.token, op))
-    retnode.add_child(self._pow())
+    retnode.add_child(self._term())
+    retnode.add_child(self._powF())
     return retnode
 
   def _term(self):

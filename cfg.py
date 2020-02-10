@@ -14,3 +14,7 @@ class Nonterminals:
   POW = 12
   BOF = 13
   EOF = 14
+  EXPRF = 15
+  FACTORF = 16
+  POWF = 17
+  STATEMENTSF = 18

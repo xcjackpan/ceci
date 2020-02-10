@@ -1,0 +1,55 @@
+program -> BOF statement statements EOF
+
+statements -> statement statements'
+statements' -> statement statements'
+statements' ->
+
+# TODO: Fix test grammar ... should be recursive
+statement -> IF LBRAC test RBRAC LCURL statements RCURL
+test -> EXPR GT EXPR
+test -> EXPR LT EXPR
+test -> EXPR AND EXPR
+test -> EXPR OR EXPR
+test -> EXPR IS EXPR
+test -> NOT test
+
+statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
+looprules -> test
+looprules -> decl COMMA test COMMA assignment
+
+statement -> PRINT expr
+
+statement -> assignment
+assignment -> ID BECOMES expr
+
+statement -> BREAK
+
+statement -> RETURN expr
+
+statement -> decl
+decl -> LET ID BECOMES expr
+
+expr -> FUNC
+FUNC -> ID LBRAC params RBRAC
+
+params -> expr COMMA params
+params ->
+
+func -> func INTO func
+
+expr -> factor expr'
+expr' -> PLUS factor expr'
+expr' -> MINUS factor expr'
+expr' ->
+
+factor -> pow factor'
+factor' -> MULT pow factor'
+factor' -> DIV pow factor'
+factor' ->
+
+pow -> term pow'
+pow' -> EXP term pow'
+pow' ->
+
+term -> ID
+term -> DIGIT
