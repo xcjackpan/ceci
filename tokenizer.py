@@ -84,7 +84,7 @@ class Token:
     elif len(lexeme) == 1:
       #Either digit or ID
       self.token = Tokens.NUM if lexeme.isdigit() else Tokens.ID
-    elif not lexeme[0].isdigit():
+    elif lexeme[0].isalpha():
       self.token = Tokens.ID
     elif lexeme.isdigit():
       self.token = Tokens.NUM

@@ -20,8 +20,10 @@ class Node:
       child.print()
 
 class ParseException(Exception):
-  def __init__(self, message):
-      self.message = message
+  def __init__(self, message=None):
+    if message is None:
+      self.message = "Parse error!"
+    self.message = message
 
 class ParseTree:
   def print_tokens(self):
@@ -49,12 +51,14 @@ class ParseTree:
   def _curr_token(self):
     return self.program[self.pos]
 
-  def _munch(self, token_types):
+  def _munch(self, token_types=None):
     munched = self._curr_token()
-    if munched.token in token_types:
+    if token_types is None:
+      return munched
+    elif munched.token in token_types:
       self._next_token()
       return munched
-    raise ParseException("Munch failed at" + self._curr_token().lexeme)
+    raise ParseException("Parse error at " + self._curr_token().lexeme)
 
   def _expr(self):
     retnode = Node(Nonterminals.EXPR)
@@ -111,6 +115,27 @@ class ParseTree:
     return retnode
 
   def _term(self):
-    term = self._munch([Tokens.ID, Tokens.NUM])
-    return Node(term.token, term)
-  
+    retnode = Node(Nonterminals.TERM)
+    try:
+      munched = self._munch([Tokens.ID, Tokens.NUM])
+      retnode.add_child(Node(munched.token, munched))
+      return retnode
+    except ParseException:
+      # Either bracket or unary sub
+      pass
+      
+    try:
+      munched = self._munch([Tokens.MINUS])
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._term())
+      return retnode
+    except ParseException:
+      # Must be LBRAC expr RBRAC
+      pass
+
+    munched = self._munch([Tokens.LBRAC])
+    retnode.add_child(Node(munched.token, munched))
+    retnode.add_child(self._expr())
+    rbrac = self._munch([Tokens.RBRAC])
+    retnode.add_child(Node(rbrac.token, rbrac))
+    return retnode

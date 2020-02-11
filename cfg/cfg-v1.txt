@@ -42,6 +42,7 @@ expr -> factor
 factor -> factor MULT pow
 factor -> factor DIV pow
 factor -> pow
+factor -> LPAREN expr RPAREN
 
 pow -> pow EXP term
 pow -> term

@@ -10,10 +10,8 @@ def evaluate(node):
     return factor(node)
   elif node.type == Nonterminals.POW:
     return eval_pow(node)
-  elif node.type == Tokens.ID:
+  elif node.type == Nonterminals.TERM:
     return term(node)
-  elif node.type == Tokens.NUM:
-    return int(node.token.lexeme)
 
 def expr(node):
   left = evaluate(node.children[0])
@@ -63,3 +61,19 @@ def eval_powF(left, node):
   if len(node.children) == 3:
     return eval_powF(left, node.children[2])
   return left
+
+def term(node):
+  length = len(node.children)
+  if length == 1:
+    # Either an ID or a num
+    if node.children[0].type == Tokens.ID:
+      # TODO: Variables
+      pass
+    elif node.children[0].type == Tokens.NUM:
+      return int(node.children[0].token.lexeme)
+  elif length == 2:
+    # Unary minus
+    return -1 * term(node.children[1])
+  else:
+    # Expression in brackets
+    return expr(node.children[1])
