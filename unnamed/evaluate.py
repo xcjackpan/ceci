@@ -1,5 +1,6 @@
-from tokenizer import *
-from cfg import *
+from unnamed.tokenizer import *
+from unnamed.cfg import *
+from unnamed.parsetree import *
 
 #TODO: Refactor out repetitive code ... but it's late rn
 

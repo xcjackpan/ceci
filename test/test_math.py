@@ -1,8 +1,5 @@
 import unittest
-
-import sys
-sys.path.append("..")
-from unnamed import *
+from unnamed.unnamed import run_test
 
 simple0 = "1 + 1"
 simple1 = "1 + 3 - 4"

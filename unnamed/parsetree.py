@@ -1,5 +1,5 @@
-from tokenizer import *
-from cfg import *
+from unnamed.tokenizer import *
+from unnamed.cfg import *
 
 class Node:
   def __init__(self, name, token=None):

@@ -1,7 +1,7 @@
 import sys
-from tokenizer import *
-from parsetree import *
-from evaluate import *
+from unnamed.tokenizer import *
+from unnamed.cfg import *
+from unnamed.evaluate import *
 
 def preprocess(line):
   line = line.replace("(", " ( ")
