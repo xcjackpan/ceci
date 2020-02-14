@@ -11,17 +11,19 @@ eg. In `expr -> expr +|- factor`, `factor -> factor *|/ term`, any node represen
 division are further down the tree and so are evaluated first.
 
 ## Top-down parsers and left/right-recursiveness
+*Note: A left-recursive grammar is one with rules like `A -> AB`, note how the recursive term `A` occurs on the left of the RHS. A right-recursive grammar is one with rules like `A -> BA`.*
+
 A top-down parser (eg. the one I'm building) will immediately recurse itself to death when trying to 
-parse a left-recursive grammar. You can see this left-recursive grammar in `cfg-v1.txt`
+parse a left-recursive grammar. You can see this left-recursive grammar in `unnamed\cfg\cfg-v1.txt`.
 
 But if I use a right-recursive grammar, then everything becomes right-associative. In concrete
 terms, `3 - 6 + 8` gets parsed as `3 - (6 + 8)`.
 
-Two solutions: Factor my left-recursive grammar or switch to using a bottom-up parser. Oof.
+Two solutions: Factor my left-recursive grammar or switch to using a bottom-up parser.
 
 ## Factoring grammars
-My solution to the above problem was to factor my grammar so that it is no longer left-recursive. Compare `cfg-v1.txt`
-with `cfg-v2.txt`.
+My solution to the above problem was to factor my grammar so that it is no longer left-recursive. Compare 
+`unnamed\cfg\cfg-v1.txt` with `unnamed\cfg\cfg-v2.txt`.
 
 eg. Replace every derivation `A -> AB` with `A -> Ba, a -> Ba`
 
