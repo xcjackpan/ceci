@@ -32,7 +32,10 @@ class ParseTree:
 
   def build(self):
     self._munch([Tokens.BOF])
-    return self._expr()
+    retval = self._expr()
+    if self._curr_token().token != Tokens.EOF:
+      raise ParseException
+    return retval
 
   def __init__(self, program):
     self.program = program
@@ -51,11 +54,9 @@ class ParseTree:
   def _curr_token(self):
     return self.program[self.pos]
 
-  def _munch(self, token_types=None):
+  def _munch(self, token_types):
     munched = self._curr_token()
-    if token_types is None:
-      return munched
-    elif munched.token in token_types:
+    if munched.token in token_types:
       self._next_token()
       return munched
     raise ParseException("Parse error at " + self._curr_token().lexeme)

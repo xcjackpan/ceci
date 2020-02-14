@@ -1,5 +1,6 @@
 import unittest
 from unnamed.unnamed import run_test
+from unnamed.parsetree import ParseException
 
 simple0 = "1 + 1"
 simple1 = "1 + 3 - 4"
@@ -16,6 +17,10 @@ nested0 = "((1 + 3) * 4)"
 nested1 = "(((3))) * (4 ^ (1 + 1))"
 unary0 = "1 + -4"
 unary1 = "-1 - -6"
+unary2 = "--1 - --4"
+except0 = "1 + (8"
+except1 = "1 +"
+except2 = "1 2"
 
 class MathTest(unittest.TestCase):
   def test_simple0(self):
@@ -62,6 +67,18 @@ class MathTest(unittest.TestCase):
 
   def test_unary1(self):
     self.assertEqual(run_test(unary1), 5)
+
+  def test_unary2(self):
+    self.assertEqual(run_test(unary2), -3)
+
+  def test_except0(self):
+    self.assertRaises(ParseException, run_test, except0)
+
+  def test_except1(self):
+    self.assertRaises(ParseException, run_test, except1)
+
+  def test_except2(self):
+    self.assertRaises(ParseException, run_test, except2)
 
 if __name__ == '__main__':
   unittest.main()
