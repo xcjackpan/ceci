@@ -1,9 +1,9 @@
 class Tokens:
   ID = 0
   COMMENT = 1
-  DECLARE_VAR = 2
+  LET = 2
   BECOMES = 3
-  IF_STATEMENT = 4
+  IF = 4
   LBRAC = 5
   RBRAC = 6
   LCURLY = 7
@@ -11,10 +11,10 @@ class Tokens:
   LOOP = 9
   COMMA = 10
   DOT = 11
-  BREAK_LOOP = 12
+  BREAK = 12
   RETURN = 13
-  DECLARE_FUNC = 14
-  CALL_FUNC = 15
+  FUNCTION = 14
+  CALL_FUNC = 15 #Being used?
   PRINT = 16
   COLON = 17
   AND = 18
@@ -40,9 +40,9 @@ class Tokens:
 
   LEXEMES = {
     "//": COMMENT,
-    "let": DECLARE_VAR,
+    "let": LET,
     "=": BECOMES,
-    "if": IF_STATEMENT,
+    "if": IF,
     "(": LBRAC,
     ")": RBRAC,
     "{": LCURLY,
@@ -50,9 +50,9 @@ class Tokens:
     "loop": LOOP,
     ",": COMMA,
     ".": DOT,
-    "break": BREAK_LOOP,
+    "break": BREAK,
     "return": RETURN,
-    "function": DECLARE_FUNC,
+    "function": FUNCTION,
     "print": PRINT,
     ":": COLON,
     "&&": AND,

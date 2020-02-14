@@ -1,7 +1,7 @@
 These are some notes I'm keeping for stuff I learn along the way.
 
 (This is mostly a learning exercise/for fun so pardon my use of an interpreted language to build
-and interpreted language.)
+another interpreted language.)
 
 ## Order of operations
 The terminals that are "deeper" down a parse tree are evaluated first. By having higher-precedence operations

@@ -17,12 +17,14 @@ def main():
       program.append(word)
 
   tokenized = tokenize(program)
+  #for token in tokenized:
+  #  token.print()
   parsetree = ParseTree(tokenized)
   #parsetree.print_tokens()
   parsed = parsetree.build()
   #parsed.print()
-
-  print(evaluate(parsed))
+  evaluator = Evaluator(parsed)
+  evaluator.evaluate_tree()
 
 def run_test(input_program):
   # Driver for tests
@@ -32,10 +34,14 @@ def run_test(input_program):
     program.append(word)
 
   tokenized = tokenize(program)
+  #for token in tokenized:
+  #  token.print()
   parsetree = ParseTree(tokenized)
+  #parsetree.print_tokens()
   parsed = parsetree.build()
-  
-  return evaluate(parsed)
+  #parsed.print()
+  evaluator = Evaluator(parsed)
+  evaluator.evaluate_tree()
 
 if __name__ == "__main__":
   main()

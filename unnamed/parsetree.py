@@ -26,24 +26,25 @@ class ParseException(Exception):
     self.message = message
 
 class ParseTree:
+  def __init__(self, program):
+    self.program = program
+    self.parsetree = None
+    self.pos = 0
+    self.length = len(program)
+
   def print_tokens(self):
     for token in self.program:
       token.print()
 
   def build(self):
     self._munch([Tokens.BOF])
-    retval = self._expr()
-    if self._curr_token().token != Tokens.EOF:
+    retval = self._statements()
+    if (
+      retval is None 
+      or self._curr_token().token != Tokens.EOF
+    ):
       raise ParseException
     return retval
-
-  def __init__(self, program):
-    self.program = program
-    self.parsetree = None
-    self.pos = 0
-    self.length = len(program)
-    # symbol table
-    # other pos
 
   def _next_token(self):
     self.pos += 1
@@ -60,6 +61,46 @@ class ParseTree:
       self._next_token()
       return munched
     raise ParseException("Parse error at " + self._curr_token().lexeme)
+
+  def _statements(self):
+    retnode = Node(Nonterminals.STATEMENTS)
+    try:
+      retnode.add_child(self._statement())
+    except ParseException:
+      return None
+
+    retnode.add_child(self._statements())
+    return retnode
+
+  def _statement(self):
+    retnode = Node(Nonterminals.STATEMENT)
+    statement_tokens = []
+    try:
+      # Declaring a variable
+      munched = self._munch([Tokens.LET])
+      retnode.add_child(Node(munched.token, munched))
+      munched = self._munch([Tokens.ID])
+      retnode.add_child(Node(munched.token, munched))
+      munched = self._munch([Tokens.BECOMES])
+
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._expr())
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.STATEMENT)
+
+    try:
+      # Printing a line
+      munched = self._munch([Tokens.PRINT])
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._expr())
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.STATEMENT)
+
+    retnode.add_child(self._expr()) # Could just be an expr
+    return retnode
+    #TODO: Other statement types
 
   def _expr(self):
     retnode = Node(Nonterminals.EXPR)

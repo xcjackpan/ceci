@@ -1,8 +1,7 @@
 program -> BOF statement statements EOF
 
-statements -> statement statements'
-statements' -> statement statements'
-statements' ->
+statements -> statement statements
+statements ->
 
 # TODO: Fix test grammar ... should be recursive
 statement -> IF LBRAC test RBRAC LCURL statements RCURL

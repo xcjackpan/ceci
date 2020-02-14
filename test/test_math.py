@@ -1,84 +1,88 @@
+import io
+import sys
 import unittest
+import unittest.mock
 from unnamed.unnamed import run_test
 from unnamed.parsetree import ParseException
 
-simple0 = "1 + 1"
-simple1 = "1 + 3 - 4"
-associativity = "1 - 5 + 6"
-simple2 = "3 * 6"
-simple3 = "6 / 2"
-doubledigit = "11 * 10 + 16 - 4 + 19"
-precedence0 = "1 + 5 * 6 + 1"
-precedence1 = "1 - 12 / 6"
-precedence2 = "2 * 5 ^ 6"
-precedence3 = "(1 + 3) * (2 - 4)"
-precedence4 = "1 - (8 + 4) * 10"
-nested0 = "((1 + 3) * 4)"
-nested1 = "(((3))) * (4 ^ (1 + 1))"
-unary0 = "1 + -4"
-unary1 = "-1 - -6"
-unary2 = "--1 - --4"
+simple0 = "print 1 + 1"
+simple1 = "print 1 + 3 - 4"
+associativity = "print 1 - 5 + 6"
+simple2 = "print 3 * 6"
+simple3 = "print 6 / 2"
+doubledigit = "print 11 * 10 + 16 - 4 + 19"
+precedence0 = "print 1 + 5 * 6 + 1"
+precedence1 = "print 1 - 12 / 6"
+precedence2 = "print 2 * 5 ^ 6"
+precedence3 = "print (1 + 3) * (2 - 4)"
+precedence4 = "print 1 - (8 + 4) * 10"
+nested0 = "print ((1 + 3) * 4)"
+nested1 = "print (((3))) * (4 ^ (1 + 1))"
+unary0 = "print 1 + -4"
+unary1 = "print -1 - -6"
+unary2 = "print --1 - --4"
 except0 = "1 + (8"
 except1 = "1 +"
-except2 = "1 2"
 
 class MathTest(unittest.TestCase):
+  @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
+  def assert_stdout(self, test_case, expected_output, mock_stdout):
+    run_test(test_case)
+    self.assertEqual(mock_stdout.getvalue(), expected_output)
+
   def test_simple0(self):
-    self.assertEqual(run_test(simple0), 2)
+    self.assert_stdout(simple0, '2\n')
 
   def test_simple1(self):
-    self.assertEqual(run_test(simple1), 0)
+    self.assert_stdout(simple1, '0\n')
 
   def test_associativity(self):
-    self.assertEqual(run_test(associativity), 2)
+    self.assert_stdout(associativity, '2\n')
 
   def test_simple2(self):
-    self.assertEqual(run_test(simple2), 18)
+    self.assert_stdout(simple2, '18\n')
 
   def test_simple3(self):
-    self.assertEqual(run_test(simple3), 3)
+    self.assert_stdout(simple3, '3.0\n')
 
   def test_doubledigit(self):
-    self.assertEqual(run_test(doubledigit), 141)
+    self.assert_stdout(doubledigit, '141\n')
 
   def test_precedence0(self):
-    self.assertEqual(run_test(precedence0), 32)
+    self.assert_stdout(precedence0, '32\n')
 
   def test_precedence1(self):
-    self.assertEqual(run_test(precedence1), -1)
+    self.assert_stdout(precedence1, '-1.0\n')
 
   def test_precedence2(self):
-    self.assertEqual(run_test(precedence2), 31250)
+    self.assert_stdout(precedence2, '31250\n')
 
   def test_precedence3(self):
-    self.assertEqual(run_test(precedence3), -8)
+    self.assert_stdout(precedence3, '-8\n')
 
   def test_precedence4(self):
-    self.assertEqual(run_test(precedence4), -119)
+    self.assert_stdout(precedence4, '-119\n')
 
   def test_nested0(self):
-    self.assertEqual(run_test(nested0), 16)
+    self.assert_stdout(nested0, '16\n')
 
   def test_nested1(self):
-    self.assertEqual(run_test(nested1), 48)
+    self.assert_stdout(nested1, '48\n')
 
   def test_unary0(self):
-    self.assertEqual(run_test(unary0), -3)
+    self.assert_stdout(unary0, '-3\n')
 
   def test_unary1(self):
-    self.assertEqual(run_test(unary1), 5)
+    self.assert_stdout(unary1, '5\n')
 
   def test_unary2(self):
-    self.assertEqual(run_test(unary2), -3)
+    self.assert_stdout(unary2, '-3\n')
 
   def test_except0(self):
     self.assertRaises(ParseException, run_test, except0)
 
   def test_except1(self):
     self.assertRaises(ParseException, run_test, except1)
-
-  def test_except2(self):
-    self.assertRaises(ParseException, run_test, except2)
 
 if __name__ == '__main__':
   unittest.main()
