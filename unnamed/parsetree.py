@@ -38,6 +38,11 @@ class ParseTree:
 
   def build(self):
     self._munch([Tokens.BOF])
+
+    # TODO: Remove testing test code
+    # Just for testing haha
+    return self._test()
+
     retval = self._statements()
     if (
       retval is None 
@@ -114,6 +119,68 @@ class ParseTree:
     retnode.add_child(self._expr()) # Could just be an expr
     return retnode
     #TODO: Other statement types
+
+  def _test(self):
+    retnode = Node(Nonterminals.TEST)
+    retnode.add_child(self._testb())
+    retnode.add_child(self._testf())
+    return retnode
+
+  def _testf(self):
+    try:
+      op = self._munch([Tokens.AND, Tokens.OR])
+    except ParseException:
+      return None
+  
+    retnode = Node(Nonterminals.TESTF)
+    retnode.add_child(Node(op.token, op))
+    retnode.add_child(self._testb())
+    retnode.add_child(self._testf())
+    return retnode
+
+  def _testb(self):
+    retnode = Node(Nonterminals.TESTB)
+    try:
+      # Could just be True or False
+      munched = self._munch([Tokens.TRUE, Tokens.FALSE])
+      retnode.add_child(Node(munched.token, munched))
+      return retnode
+    except ParseException:
+      pass
+
+    try:
+      # Could be not test
+      munched = self._munch([Tokens.NOT])
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._testb())
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.TESTB)
+
+    try:
+      # Could be LPAREN test RPAREN
+      munched = self._munch([Tokens.LBRAC])
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._test())
+      munched = self._munch([Tokens.RBRAC])
+      retnode.add_child(Node(munched.token, munched))
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.TESTB)
+
+    # Could be EXPR op EXPR
+    retnode.add_child(self._expr())
+    munched = self._munch([
+      Tokens.AND,
+      Tokens.OR,
+      Tokens.NEQ,
+      Tokens.EQ,
+      Tokens.LEQ,
+      Tokens.GEQ,
+    ])
+    retnode.add_child(Node(munched.token, munched))
+    retnode.add_child(self._expr())
+    return retnode
 
   def _expr(self):
     retnode = Node(Nonterminals.EXPR)

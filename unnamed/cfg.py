@@ -18,3 +18,5 @@ class Nonterminals:
   FACTORF = 16
   POWF = 17
   STATEMENTSF = 18
+  TESTF = 19
+  TESTB = 20

@@ -5,12 +5,19 @@ statements ->
 
 # TODO: Fix test grammar ... should be recursive
 statement -> IF LBRAC test RBRAC LCURL statements RCURL
-test -> EXPR GT EXPR
-test -> EXPR LT EXPR
-test -> EXPR AND EXPR
-test -> EXPR OR EXPR
-test -> EXPR IS EXPR
-test -> NOT test
+
+stest -> EXPR GT EXPR
+stest -> EXPR LT EXPR
+stest -> EXPR NEQ EXPR
+stest -> EXPR EQ EXPR
+stest -> LPAREN test RPAREN
+stest -> NOT stest
+stest -> True
+stest -> False
+
+test -> stest ftest
+ftest -> AND stest ftest
+ftest -> OR stest ftest
 
 statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
 looprules -> test

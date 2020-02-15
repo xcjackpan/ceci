@@ -37,6 +37,7 @@ class Tokens:
   TRUE = 35
   BOF = 36
   EOF = 37
+  NOT = 38
 
   LEXEMES = {
     "//": COMMENT,
@@ -67,9 +68,10 @@ class Tokens:
     "into": INTO,
     "pipe": PIPE,
     "==": EQ,
-    "!==": NEQ,
+    "!=": NEQ,
     ">=": GEQ,
     "<=": LEQ,
+    "not": NOT,
     "False": FALSE,
     "True": TRUE,
     "BOF": BOF,
