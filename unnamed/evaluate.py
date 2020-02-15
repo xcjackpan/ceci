@@ -29,6 +29,11 @@ class Evaluator:
       raise EvaluateException(name + " is not defined!")
     return self.symtable[name]
 
+  def _update_in_symtable(self, name, value):
+    if name not in self.symtable:
+      raise EvaluateException(name + " is not defined!")
+    self.symtable[name] = value  
+
   def _evaluate(self, node):
     if node.type == Nonterminals.STATEMENTS:
       self._statements(node)
@@ -64,6 +69,15 @@ class Evaluator:
       if is_decl:
         result = self._expr(node.children[3])
         self._add_to_symtable(node.children[1].token.lexeme, result)
+    elif length == 3:
+      is_assignment = (
+        node.children[0].type == Tokens.ID
+        and node.children[1].type == Tokens.BECOMES
+        and node.children[2].type == Nonterminals.EXPR
+      )
+      if is_assignment:
+        result = self._expr(node.children[2])
+        self._update_in_symtable(node.children[0].token.lexeme, result)
     elif length == 2:
       is_print = (
         node.children[0].type == Tokens.PRINT

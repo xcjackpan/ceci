@@ -82,8 +82,20 @@ class ParseTree:
       munched = self._munch([Tokens.ID])
       retnode.add_child(Node(munched.token, munched))
       munched = self._munch([Tokens.BECOMES])
-
       retnode.add_child(Node(munched.token, munched))
+
+      retnode.add_child(self._expr())
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.STATEMENT)
+
+    try:
+      # Assigning a variable
+      munched = self._munch([Tokens.ID])
+      retnode.add_child(Node(munched.token, munched))
+      munched = self._munch([Tokens.BECOMES])
+      retnode.add_child(Node(munched.token, munched))
+
       retnode.add_child(self._expr())
       return retnode
     except ParseException:
@@ -93,6 +105,7 @@ class ParseTree:
       # Printing a line
       munched = self._munch([Tokens.PRINT])
       retnode.add_child(Node(munched.token, munched))
+
       retnode.add_child(self._expr())
       return retnode
     except ParseException:

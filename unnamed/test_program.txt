@@ -1,4 +1,6 @@
 let a = 5
 let b = 6
 let c = -1
-print a + b + c - a - c
+print a + b
+a = 7
+print a + b
