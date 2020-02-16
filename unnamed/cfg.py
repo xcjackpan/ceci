@@ -18,5 +18,5 @@ class Nonterminals:
   FACTORF = 16
   POWF = 17
   STATEMENTSF = 18
-  TESTF = 19
-  TESTB = 20
+  TESTF = 19 #Test factored node 
+  TESTB = 20 #Test base node    

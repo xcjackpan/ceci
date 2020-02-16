@@ -39,16 +39,11 @@ class ParseTree:
   def build(self):
     self._munch([Tokens.BOF])
 
-    # TODO: Remove testing test code
-    # Just for testing haha
-    return self._test()
-
     retval = self._statements()
-    if (
-      retval is None 
-      or self._curr_token().token != Tokens.EOF
-    ):
-      raise ParseException
+    if self._curr_token().token != Tokens.EOF:
+      raise ParseException("Didn't finish parsing!")
+    elif retval is None:
+      raise ParseException("No result!")
     return retval
 
   def _next_token(self):
@@ -110,23 +105,34 @@ class ParseTree:
       # Printing a line
       munched = self._munch([Tokens.PRINT])
       retnode.add_child(Node(munched.token, munched))
-
-      retnode.add_child(self._expr())
+      # TODO: What else could be printed??
+      try:
+        retnode.add_child(self._expr())
+      except ParseException:
+        retnode.add_child(self._test())
       return retnode
     except ParseException:
       retnode = Node(Nonterminals.STATEMENT)
 
-    retnode.add_child(self._expr()) # Could just be an expr
+    try:
+      # Could just be a test
+      retnode.add_child(self._test())
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.STATEMENT)
+  
+    # First try test, then try expr
+    retnode.add_child(self._expr())
     return retnode
     #TODO: Other statement types
 
   def _test(self):
     retnode = Node(Nonterminals.TEST)
-    retnode.add_child(self._testb())
-    retnode.add_child(self._testf())
+    retnode.add_child(self._testB())
+    retnode.add_child(self._testF())
     return retnode
 
-  def _testf(self):
+  def _testF(self):
     try:
       op = self._munch([Tokens.AND, Tokens.OR])
     except ParseException:
@@ -134,11 +140,11 @@ class ParseTree:
   
     retnode = Node(Nonterminals.TESTF)
     retnode.add_child(Node(op.token, op))
-    retnode.add_child(self._testb())
-    retnode.add_child(self._testf())
+    retnode.add_child(self._testB())
+    retnode.add_child(self._testF())
     return retnode
 
-  def _testb(self):
+  def _testB(self):
     retnode = Node(Nonterminals.TESTB)
     try:
       # Could just be True or False
@@ -152,7 +158,7 @@ class ParseTree:
       # Could be not test
       munched = self._munch([Tokens.NOT])
       retnode.add_child(Node(munched.token, munched))
-      retnode.add_child(self._testb())
+      retnode.add_child(self._testB())
       return retnode
     except ParseException:
       retnode = Node(Nonterminals.TESTB)

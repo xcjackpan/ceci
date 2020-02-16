@@ -48,6 +48,12 @@ class Evaluator:
       return self._eval_pow(node)
     elif node.type == Nonterminals.TERM:
       return self._term(node)
+    elif node.type == Nonterminals.TEST:
+      return self._test(node)
+    elif node.type == Nonterminals.TESTF:
+      return self._testF(node)
+    elif node.type == Nonterminals.TESTB:
+      return self._testB(node)
 
   def _statements(self, node):
     if len(node.children) == 2:
@@ -81,13 +87,72 @@ class Evaluator:
     elif length == 2:
       is_print = (
         node.children[0].type == Tokens.PRINT
-        and node.children[1].type == Nonterminals.EXPR
+        and (
+          node.children[1].type == Nonterminals.EXPR
+          or node.children[1].type == Nonterminals.TEST
+        )
       )
       if is_print:
-        result = self._expr(node.children[1])
+        result = self._evaluate(node.children[1])
         print(str(result))
     elif length == 1:
-      return self._expr(node.children[0])
+      if node.children[0].type == Nonterminals.EXPR:
+        return self._expr(node.children[0])
+      elif node.children[0].type == Nonterminals.TEST:
+        return self._test(node.children[0])
+
+  def _test(self, node):
+    left = self._evaluate(node.children[0])
+    if len(node.children) == 1:
+      return left
+    return self._testF(left, node.children[1])
+
+  def _testF(self, left, node):
+    # Could be AND or OR
+    if node.children[0].type == Tokens.AND:
+      left = left and self._evaluate(node.children[1])
+    else:
+      left = left or self._evaluate(node.children[1])
+
+    if len(node.children) == 3:
+      return self._testF(left, node.children[2])
+    return left
+
+  def _testB(self, node):
+    #stest -> EXPR GT EXPR
+    #stest -> EXPR LT EXPR
+    #stest -> EXPR NEQ EXPR
+    #stest -> EXPR EQ EXPR
+    #stest -> LPAREN test RPAREN
+    #stest -> NOT stest
+    #stest -> True
+    #stest -> False
+    length = len(node.children)
+    if length == 3:
+      if node.children[0].type == Tokens.LPAREN:
+        return self._evaluate(node.children[1])
+      
+      op = node.children[1].type
+      left = self._evaluate(node.children[0])
+      right = self._evaluate(node.children[2])
+      if op == Tokens.GT:
+        return left > right
+      elif op == Tokens.LT:
+        return left < right
+      elif op == Tokens.NEQ:
+        return left != right
+      elif op == Tokens.EQ:
+        return left == right
+      elif op == Tokens.LEQ:
+        return left <= right
+      elif op == Tokens.GEQ:
+        return left >= right
+    elif length == 2:
+      lexeme = self._evaluate(node.children[1])
+      return True if lexeme is "False" else "True"
+    elif length == 1:
+      lexeme = node.children[0].token.lexeme
+      return True if lexeme is "True" else "False"
 
   def _expr(self, node):
     left = self._evaluate(node.children[0])
@@ -99,7 +164,7 @@ class Evaluator:
     # Receives an EXPRF node
     # expr' -> PLUS factor expr'
     # expr' -> MINUS factor expr'
-
+    #TODO: Replace with direct exprF call
     if node.children[0].type == Tokens.PLUS:
       left = left + self._evaluate(node.children[1])
     else:
