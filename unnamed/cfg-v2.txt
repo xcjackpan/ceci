@@ -61,3 +61,4 @@ term -> ID
 term -> DIGIT
 term -> LBRAC expr RBRAC
 term -> MINUS term
+term -> test

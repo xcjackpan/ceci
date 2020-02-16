@@ -37,6 +37,7 @@ class ParseTree:
       token.print()
 
   def build(self):
+    # TODO: Parsing TEST vs parsing EXPR
     self._munch([Tokens.BOF])
 
     retval = self._statements()
