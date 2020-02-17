@@ -1,5 +1,5 @@
 from unnamed.unnamed import run_test
-from unnamed.parsetree import ParseException
+from unnamed.evaluate import EvaluateException
 from test.base_test_case import BaseTestCase
 
 simple0 = """
@@ -47,6 +47,16 @@ reassign2 = """
               print a
               print b
             """
+except0 = """
+            print a
+          """
+except1 = """
+            a = 5
+          """
+except2 = """
+            let b = 0
+            b = a + 1
+          """
 
 class VarsTest(BaseTestCase):
   def test_simple0(self):
@@ -66,6 +76,15 @@ class VarsTest(BaseTestCase):
 
   def test_reassign2(self):
     self.assert_stdout(reassign2, '1\n2\n6\n2\n')
+
+  def test_except0(self):
+    self.assert_exception(except0, EvaluateException)
+
+  def test_except1(self):
+    self.assert_exception(except1, EvaluateException)
+
+  def test_except2(self):
+    self.assert_exception(except2, EvaluateException)
 
 if __name__ == '__main__':
   unittest.main()

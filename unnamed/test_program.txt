@@ -1,7 +1,1 @@
-let a = 5
-let b = 3
-print b + 1
-print b - 1
-print b
-print b * 2
-print b ^ 2
+print 2 * 5 ^ 6

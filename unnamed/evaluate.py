@@ -40,6 +40,12 @@ class Evaluator:
       return None
     elif node.type == Nonterminals.STATEMENT:
       return self._statement(node)
+    elif node.type == Nonterminals.BEXPR:
+      return self._bexpr(node)
+    elif node.type == Nonterminals.BEXPRF:
+      return self._bexprF(node)
+    elif node.type == Nonterminals.TEST:
+      return self._test(node)
     elif node.type == Nonterminals.EXPR:
       return self._expr(node)
     elif node.type == Nonterminals.FACTOR:
@@ -48,12 +54,6 @@ class Evaluator:
       return self._eval_pow(node)
     elif node.type == Nonterminals.TERM:
       return self._term(node)
-    elif node.type == Nonterminals.TEST:
-      return self._test(node)
-    elif node.type == Nonterminals.TESTF:
-      return self._testF(node)
-    elif node.type == Nonterminals.TESTB:
-      return self._testB(node)
 
   def _statements(self, node):
     if len(node.children) == 2:
@@ -70,27 +70,24 @@ class Evaluator:
         node.children[0].type == Tokens.LET
         and node.children[1].type == Tokens.ID
         and node.children[2].type == Tokens.BECOMES
-        and node.children[3].type == Nonterminals.EXPR
+        and node.children[3].type == Nonterminals.BEXPR
       )
       if is_decl:
-        result = self._expr(node.children[3])
+        result = self._evaluate(node.children[3])
         self._add_to_symtable(node.children[1].token.lexeme, result)
     elif length == 3:
       is_assignment = (
         node.children[0].type == Tokens.ID
         and node.children[1].type == Tokens.BECOMES
-        and node.children[2].type == Nonterminals.EXPR
+        and node.children[2].type == Nonterminals.BEXPR
       )
       if is_assignment:
-        result = self._expr(node.children[2])
+        result = self._evaluate(node.children[2])
         self._update_in_symtable(node.children[0].token.lexeme, result)
     elif length == 2:
       is_print = (
         node.children[0].type == Tokens.PRINT
-        and (
-          node.children[1].type == Nonterminals.EXPR
-          or node.children[1].type == Nonterminals.TEST
-        )
+        and node.children[1].type == Nonterminals.BEXPR
       )
       if is_print:
         result = self._evaluate(node.children[1])
@@ -207,6 +204,10 @@ class Evaluator:
         return self._get_from_symtable(node.children[0].token.lexeme)
       elif node.children[0].type == Tokens.NUM:
         return int(node.children[0].token.lexeme)
+      elif node.children[0].type == Tokens.TRUE:
+        return True
+      elif node.children[0].type == Tokens.FALSE:
+        return False
     elif length == 2:
       # Unary minus
       return -1 * self._term(node.children[1])

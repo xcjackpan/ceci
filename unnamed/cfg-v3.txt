@@ -4,41 +4,28 @@ statements -> statement statements
 statements ->
 
 # TODO: Fix test grammar ... should be recursive
-statement -> IF LBRAC test RBRAC LCURL statements RCURL
-
-stest -> EXPR GT EXPR
-stest -> EXPR LT EXPR
-stest -> EXPR NEQ EXPR
-stest -> EXPR EQ EXPR
-stest -> LPAREN test RPAREN
-stest -> NOT stest
-stest -> True
-stest -> False
-
-test -> stest ftest
-ftest -> AND stest ftest
-ftest -> OR stest ftest
+statement -> IF LBRAC bexpr RBRAC LCURL statements RCURL
 
 statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
 looprules -> test
 looprules -> decl COMMA test COMMA assignment
 
-statement -> PRINT expr
+statement -> PRINT bexpr
 
 statement -> assignment
-assignment -> ID BECOMES expr
+assignment -> ID BECOMES bexpr
 
 statement -> BREAK
 
 statement -> RETURN expr
 
 statement -> decl
-decl -> LET ID BECOMES expr
+decl -> LET ID BECOMES bexpr
 
 expr -> FUNC
 FUNC -> ID LBRAC params RBRAC
 
-params -> expr COMMA params
+params -> bexpr COMMA params
 params ->
 
 func -> func INTO func
@@ -71,4 +58,4 @@ term -> DIGIT
 term -> LBRAC bexpr RBRAC
 term -> MINUS term
 term -> True
-term -> FALSE
+term -> False

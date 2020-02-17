@@ -87,7 +87,7 @@ class ParseTree:
       munched = self._munch([Tokens.BECOMES])
       retnode.add_child(Node(munched.token, munched))
 
-      retnode.add_child(self._expr())
+      retnode.add_child(self._bexpr())
       return retnode
     except ParseException:
       retnode = Node(Nonterminals.STATEMENT)
@@ -99,7 +99,7 @@ class ParseTree:
       munched = self._munch([Tokens.BECOMES])
       retnode.add_child(Node(munched.token, munched))
 
-      retnode.add_child(self._expr())
+      retnode.add_child(self._bexpr())
       return retnode
     except ParseException:
       retnode = Node(Nonterminals.STATEMENT)
@@ -109,23 +109,12 @@ class ParseTree:
       munched = self._munch([Tokens.PRINT])
       retnode.add_child(Node(munched.token, munched))
       # TODO: What else could be printed??
-      try:
-        retnode.add_child(self._expr())
-      except ParseException:
-        retnode.add_child(self._test())
-      return retnode
-    except ParseException:
-      retnode = Node(Nonterminals.STATEMENT)
-
-    try:
-      # Could just be a test
-      retnode.add_child(self._test())
+      retnode.add_child(self._bexpr())
       return retnode
     except ParseException:
       retnode = Node(Nonterminals.STATEMENT)
   
-    # First try test, then try expr
-    retnode.add_child(self._expr())
+    retnode.add_child(self._bexpr())
     return retnode
     #TODO: Other statement types
 
