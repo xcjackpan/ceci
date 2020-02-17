@@ -1,9 +1,6 @@
-import io
-import sys
-import unittest
-import unittest.mock
 from unnamed.unnamed import run_test
 from unnamed.parsetree import ParseException
+from test.base_test_case import BaseTestCase
 
 simple0 = "print 1 + 1"
 simple1 = "print 1 + 3 - 4"
@@ -24,12 +21,7 @@ unary2 = "print --1 - --4"
 except0 = "1 + (8"
 except1 = "1 +"
 
-class MathTest(unittest.TestCase):
-  @unittest.mock.patch('sys.stdout', new_callable=io.StringIO)
-  def assert_stdout(self, test_case, expected_output, mock_stdout):
-    run_test(test_case)
-    self.assertEqual(mock_stdout.getvalue(), expected_output)
-
+class MathTest(BaseTestCase):
   def test_simple0(self):
     self.assert_stdout(simple0, '2\n')
 
@@ -79,10 +71,10 @@ class MathTest(unittest.TestCase):
     self.assert_stdout(unary2, '-3\n')
 
   def test_except0(self):
-    self.assertRaises(ParseException, run_test, except0)
+    self.assert_exception(except0, ParseException)
 
   def test_except1(self):
-    self.assertRaises(ParseException, run_test, except1)
+    self.assert_exception(except1, ParseException)
 
 if __name__ == '__main__':
   unittest.main()
