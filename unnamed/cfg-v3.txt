@@ -1,0 +1,74 @@
+program -> BOF statement statements EOF
+
+statements -> statement statements
+statements ->
+
+# TODO: Fix test grammar ... should be recursive
+statement -> IF LBRAC test RBRAC LCURL statements RCURL
+
+stest -> EXPR GT EXPR
+stest -> EXPR LT EXPR
+stest -> EXPR NEQ EXPR
+stest -> EXPR EQ EXPR
+stest -> LPAREN test RPAREN
+stest -> NOT stest
+stest -> True
+stest -> False
+
+test -> stest ftest
+ftest -> AND stest ftest
+ftest -> OR stest ftest
+
+statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
+looprules -> test
+looprules -> decl COMMA test COMMA assignment
+
+statement -> PRINT expr
+
+statement -> assignment
+assignment -> ID BECOMES expr
+
+statement -> BREAK
+
+statement -> RETURN expr
+
+statement -> decl
+decl -> LET ID BECOMES expr
+
+expr -> FUNC
+FUNC -> ID LBRAC params RBRAC
+
+params -> expr COMMA params
+params ->
+
+func -> func INTO func
+
+# BEXPR is a root Nonterminal that becomes an expr
+bexpr -> test bexpr' 
+bexpr' -> AND test bexpr'
+bexpr' -> OR test bexpr'
+bexpr' ->
+test -> expr OPS expr
+test -> expr
+test -> NOT test
+
+expr -> factor expr'
+expr' -> PLUS factor expr'
+expr' -> MINUS factor expr'
+expr' ->
+
+factor -> pow factor'
+factor' -> MULT pow factor'
+factor' -> DIV pow factor'
+factor' ->
+
+pow -> term pow'
+pow' -> EXP term pow'
+pow' ->
+
+term -> ID
+term -> DIGIT
+term -> LBRAC bexpr RBRAC
+term -> MINUS term
+term -> True
+term -> FALSE

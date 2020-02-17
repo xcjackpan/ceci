@@ -101,37 +101,32 @@ class Evaluator:
       elif node.children[0].type == Nonterminals.TEST:
         return self._test(node.children[0])
 
-  def _test(self, node):
+  def _bexpr(self, node):
     left = self._evaluate(node.children[0])
     if len(node.children) == 1:
       return left
-    return self._testF(left, node.children[1])
+    return self._bexprF(left, node.children[1])
 
-  def _testF(self, left, node):
-    # Could be AND or OR
+  def _bexprF(self, left, node):
     if node.children[0].type == Tokens.AND:
       left = left and self._evaluate(node.children[1])
     else:
       left = left or self._evaluate(node.children[1])
 
     if len(node.children) == 3:
-      return self._testF(left, node.children[2])
+      return self._bexprF(left, node.children[2])
     return left
 
-  def _testB(self, node):
-    #stest -> EXPR GT EXPR
-    #stest -> EXPR LT EXPR
-    #stest -> EXPR NEQ EXPR
-    #stest -> EXPR EQ EXPR
-    #stest -> LPAREN test RPAREN
-    #stest -> NOT stest
-    #stest -> True
-    #stest -> False
+  def _test(self, node):
+    #test -> EXPR GT EXPR
+    #test -> EXPR LT EXPR
+    #test -> EXPR NEQ EXPR
+    #test -> EXPR EQ EXPR
+    #test -> NOT test
+    #test -> True
+    #test -> False
     length = len(node.children)
     if length == 3:
-      if node.children[0].type == Tokens.LPAREN:
-        return self._evaluate(node.children[1])
-      
       op = node.children[1].type
       left = self._evaluate(node.children[0])
       right = self._evaluate(node.children[2])
@@ -149,10 +144,11 @@ class Evaluator:
         return left >= right
     elif length == 2:
       lexeme = self._evaluate(node.children[1])
+      # TODO: Type error checking!
       return True if lexeme is "False" else "True"
     elif length == 1:
-      lexeme = node.children[0].token.lexeme
-      return True if lexeme is "True" else "False"
+      # Must be just an expr
+      return self._evaluate(node.children[0])
 
   def _expr(self, node):
     left = self._evaluate(node.children[0])
@@ -216,4 +212,4 @@ class Evaluator:
       return -1 * self._term(node.children[1])
     else:
       # Expression in brackets
-      return self._expr(node.children[1])
+      return self._bexpr(node.children[1])

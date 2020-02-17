@@ -38,6 +38,8 @@ class ParseTree:
 
   def build(self):
     # TODO: Parsing TEST vs parsing EXPR
+    # We can make TEST a node above EXPR ... make the boolean
+    # ops be evaluated last, have type errors be EvaluateErrors
     self._munch([Tokens.BOF])
 
     retval = self._statements()
@@ -127,67 +129,51 @@ class ParseTree:
     return retnode
     #TODO: Other statement types
 
-  def _test(self):
-    retnode = Node(Nonterminals.TEST)
-    retnode.add_child(self._testB())
-    retnode.add_child(self._testF())
+  def _bexpr(self):
+    retnode = Node(Nonterminals.BEXPR)
+    retnode.add_child(self._test())
+    retnode.add_child(self._bexprF())
     return retnode
 
-  def _testF(self):
+  def _bexprF(self):
     try:
       op = self._munch([Tokens.AND, Tokens.OR])
     except ParseException:
       return None
   
-    retnode = Node(Nonterminals.TESTF)
+    retnode = Node(Nonterminals.BEXPRF)
     retnode.add_child(Node(op.token, op))
-    retnode.add_child(self._testB())
-    retnode.add_child(self._testF())
+    retnode.add_child(self._test())
+    retnode.add_child(self._bexprF())
     return retnode
 
-  def _testB(self):
-    retnode = Node(Nonterminals.TESTB)
-    try:
-      # Could just be True or False
-      munched = self._munch([Tokens.TRUE, Tokens.FALSE])
-      retnode.add_child(Node(munched.token, munched))
-      return retnode
-    except ParseException:
-      pass
-
+  def _test(self):
+    retnode = Node(Nonterminals.TEST)
+    # Try to munch an OP
     try:
       # Could be not test
       munched = self._munch([Tokens.NOT])
       retnode.add_child(Node(munched.token, munched))
-      retnode.add_child(self._testB())
-      return retnode
-    except ParseException:
-      retnode = Node(Nonterminals.TESTB)
-
-    try:
-      # Could be LPAREN test RPAREN
-      munched = self._munch([Tokens.LBRAC])
-      retnode.add_child(Node(munched.token, munched))
       retnode.add_child(self._test())
-      munched = self._munch([Tokens.RBRAC])
-      retnode.add_child(Node(munched.token, munched))
       return retnode
     except ParseException:
-      retnode = Node(Nonterminals.TESTB)
+      retnode = Node(Nonterminals.TEST)
 
-    # Could be EXPR op EXPR
     retnode.add_child(self._expr())
-    munched = self._munch([
-      Tokens.AND,
-      Tokens.OR,
-      Tokens.NEQ,
-      Tokens.EQ,
-      Tokens.LEQ,
-      Tokens.GEQ,
-    ])
-    retnode.add_child(Node(munched.token, munched))
-    retnode.add_child(self._expr())
-    return retnode
+    try:
+      munched = self._munch([
+        Tokens.GT,
+        Tokens.LT,
+        Tokens.NEQ,
+        Tokens.EQ,
+        Tokens.LEQ,
+        Tokens.GEQ,
+      ])
+      retnode.add_child(Node(munched.token, munched))
+      retnode.add_child(self._expr())
+      return retnode
+    except ParseException:
+      return retnode
 
   def _expr(self):
     retnode = Node(Nonterminals.EXPR)
@@ -246,11 +232,17 @@ class ParseTree:
   def _term(self):
     retnode = Node(Nonterminals.TERM)
     try:
+      munched = self._munch([Tokens.TRUE, Tokens.FALSE])
+      retnode.add_child(Node(munched.token, munched))
+      return retnode
+    except ParseException:
+      pass
+
+    try:
       munched = self._munch([Tokens.ID, Tokens.NUM])
       retnode.add_child(Node(munched.token, munched))
       return retnode
     except ParseException:
-      # Either bracket or unary sub
       pass
       
     try:
@@ -264,7 +256,7 @@ class ParseTree:
 
     munched = self._munch([Tokens.LBRAC])
     retnode.add_child(Node(munched.token, munched))
-    retnode.add_child(self._expr())
+    retnode.add_child(self._bexpr())
     rbrac = self._munch([Tokens.RBRAC])
     retnode.add_child(Node(rbrac.token, rbrac))
     return retnode
