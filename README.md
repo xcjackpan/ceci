@@ -10,7 +10,9 @@ be derived from more rules, our grammar can naturally the mathematical order of 
 eg. In `expr -> expr +|- factor`, `factor -> factor *|/ term`, any node representing multiplication or 
 division are further down the tree and so are evaluated first.
 
-## Top-down parsers and left/right-recursiveness
+***
+
+## PROBLEM: Top-down parsers and left/right-recursiveness
 *Note: A left-recursive grammar is one with rules like `A -> AB`, note how the recursive term `A` occurs on the left of the RHS. A right-recursive grammar is one with rules like `A -> BA`.*
 
 A top-down parser (eg. the one I'm building) will recurses itself to death when trying to 
@@ -20,9 +22,7 @@ But if I use a right-recursive grammar, then everything becomes right-associativ
 would be "deeper" down the parse tree than the result of parsing `factor`. This means the `expr` gets evaluated first, resulting
 in right-associativity. 
 
-Two possible solutions: Factor my left-recursive grammar or switch to using a bottom-up parser.
-
-## Factoring grammars
+### SOLUTION: Factoring grammars
 My solution to the above problem was to factor my grammar so that it is no longer left-recursive. Compare 
 `cfg-v1.txt` with `cfg-v2.txt`.
 
@@ -31,7 +31,9 @@ eg. Replace every derivation `A -> AB` with `A -> Ba, a -> Ba`
 The downside of this is that my parse tree gets much larger, but the upside is that it's better trashing
 my current top-down parser for a bottom-up one.
 
-## Tests, mathematical expressions, and prefixes
+***
+
+## PROBLEM: Mathematical expressions, boolean tests, and prefixes
 A prefix-free language is one where no word is a prefix of another. For example, `{a, ab}` is **not** 
 prefix-free. I designed my grammar to be prefix-free because that makes it easy to parse - once you
 see the first token, you know what rule should be used without needing a lookahead.
@@ -39,3 +41,15 @@ see the first token, you know what rule should be used without needing a lookahe
 But in `cfg-v2.txt`, you can see that I didn't account for something: mathematical expressions are a prefix
 of boolean tests. You can see how `3 + 5` is a prefix of `3 + 5 < 7`. This means that when our parser sees the 
 tokens `3 + 5`, we don't know whether to create a node for `expr` or `test`.
+
+### SOLUTION: Revising my grammar
+The problem was that since I had `test` and `expr` as totally unrelated ParseNodes, there was no way to 
+figure out if I was reading in an `expr` or part of a `test`. To solve, this I modified my grammar once more:
+`cfg-v3.txt`. I added a "layer" of nonterminals above my `expr` which could derive boolean tests. This works well
+for two reasons:
+  - Since now `test` and `expr` can be derived from the same "chain" of productions, it doesn't matter that our grammar
+    isn't prefix free -- there's only one rule to use.
+  - Order of operations is preserved. When you see `3 + 5 < 10`, the `<` gets evaluated last. By placing the layer
+    of nonterminals *above* `expr`, we ensure that order of operations is respected.
+
+***

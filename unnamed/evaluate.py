@@ -65,7 +65,6 @@ class Evaluator:
   def _statement(self, node):
     length = len(node.children)
     if length == 4:
-      # LET ID BECOMES EXPR
       is_decl = (
         node.children[0].type == Tokens.LET
         and node.children[1].type == Tokens.ID
