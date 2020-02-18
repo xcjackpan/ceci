@@ -16,6 +16,9 @@ simple2 = """
             print (False or True) and (False or True)
             print (True and False) or (True and False)
           """
+simple3 = """
+            print True and (False or True) and True
+          """
 math0 = """
             print 1 + 2 < 3
             print 1 + 2 < 3 + 2
@@ -40,6 +43,9 @@ class BooleanExpressionTest(BaseTestCase):
 
   def test_simple2(self):
     self.assert_stdout(simple2, 'True\nFalse\n')
+
+  def test_simple3(self):
+    self.assert_stdout(simple3, 'True\n')
 
   def test_math0(self):
     self.assert_stdout(
