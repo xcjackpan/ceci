@@ -38,6 +38,8 @@ class Tokens:
   BOF = 36
   EOF = 37
   NOT = 38
+  ELIF = 39
+  ELSE = 40
 
   LEXEMES = {
     "//": COMMENT,
@@ -76,6 +78,8 @@ class Tokens:
     "True": TRUE,
     "BOF": BOF,
     "EOF": EOF,
+    "elif": ELIF,
+    "else": ELSE,
   }
 
 class Token:

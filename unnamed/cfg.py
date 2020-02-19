@@ -20,3 +20,4 @@ class Nonterminals:
   STATEMENTSF = 18
   BEXPR = 19
   BEXPRF = 20
+  ELIFS = 21

@@ -40,6 +40,8 @@ class Evaluator:
       return None
     elif node.type == Nonterminals.STATEMENT:
       return self._statement(node)
+    elif node.type == Nonterminals.ELIFS:
+      return self._elifs(node)
     elif node.type == Nonterminals.BEXPR:
       return self._bexpr(node)
     elif node.type == Nonterminals.BEXPRF:
@@ -64,7 +66,26 @@ class Evaluator:
 
   def _statement(self, node):
     length = len(node.children)
-    if length == 4:
+    if length == 8:
+      is_if = (
+        node.children[0].type == Tokens.IF
+        and node.children[1].type == Tokens.LBRAC
+        and node.children[2].type == Nonterminals.BEXPR
+        and node.children[3].type == Tokens.RBRAC
+        and node.children[4].type == Tokens.LCURLY
+        and node.children[5].type == Nonterminals.STATEMENTS
+        and node.children[6].type == Tokens.RCURLY
+        and node.children[7].type == Nonterminals.ELIFS
+      )
+      if is_if:
+        result = self._evaluate(node.children[2])
+        if result:
+          self._evaluate(node.children[5])
+        elif not result:
+          self._evaluate(node.children[7])
+        else:
+          raise EvaluateException("If-condition didn't return BOOL")
+    elif length == 4:
       is_decl = (
         node.children[0].type == Tokens.LET
         and node.children[1].type == Tokens.ID
@@ -96,6 +117,22 @@ class Evaluator:
         return self._expr(node.children[0])
       elif node.children[0].type == Nonterminals.TEST:
         return self._test(node.children[0])
+
+  def _elifs(self, node):
+    length = len(node.children)
+    if length != 0:
+      if node.children[0].type == Tokens.ELIF:
+        # elif LBRAC bexpr RBRAC LCURLY statements RCURLY ELIFS
+        result = self._evaluate(node.children[2])
+        if result:
+          self._evaluate(node.children[5])
+        elif not result:
+          self._evaluate(node.children[7])
+        else:
+          raise EvaluateException("If-condition didn't return BOOL")
+      elif node.children[0].type == Tokens.ELSE:
+        # ELSE LCURLY statements RCURLY
+        self._evaluate(node.children[2])
 
   def _bexpr(self, node):
     left = self._evaluate(node.children[0])

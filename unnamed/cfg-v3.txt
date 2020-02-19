@@ -4,7 +4,10 @@ statements -> statement statements
 statements ->
 
 # TODO: Fix test grammar ... should be recursive
-statement -> IF LBRAC bexpr RBRAC LCURL statements RCURL
+statement -> IF LBRAC bexpr RBRAC LCURL statements RCURL elifs
+elifs -> ELIF LBRAC bexpr RBRAC LCURL statements RCURL elifs
+elifs -> ELSE LCURL statements RCURL
+elifs ->
 
 statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
 looprules -> test
