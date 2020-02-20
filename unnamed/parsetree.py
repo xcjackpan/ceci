@@ -106,6 +106,28 @@ class ParseTree:
     try:
       self._munch_and_add_chain(
         [
+          [Tokens.LOOP],
+          [Tokens.LBRAC],
+        ],
+        retnode,
+      )
+      retnode.add_child(self._looprules())
+      self._munch_and_add_chain(
+        [
+          [Tokens.RBRAC],
+          [Tokens.LCURLY],
+        ],
+        retnode,
+      )
+      retnode.add_child(self._statements())
+      self._munch_and_add([Tokens.RCURLY], retnode)
+      return retnode
+    except ParseException:
+      retnode = Node(Nonterminals.STATEMENT)
+
+    try:
+      self._munch_and_add_chain(
+        [
           [Tokens.IF],
           [Tokens.LBRAC],
         ],
@@ -169,6 +191,25 @@ class ParseTree:
     retnode.add_child(self._bexpr())
     return retnode
     #TODO: Other statement types
+
+  def _looprules(self):
+    retnode = Node(Nonterminals.LOOPRULES)
+    try:
+      retnode.add_child(self._bexpr())
+    except ParseException:
+      retnode.add_child(self._statement())
+
+    try:
+      # Could be while
+      self._munch_and_add([Tokens.COMMA], retnode)
+    except ParseException:
+      return retnode
+    
+    # Must be for
+    retnode.add_child(self._bexpr())
+    self._munch_and_add([Tokens.COMMA], retnode)
+    retnode.add_child(self._statement())
+    return retnode
 
   def _elif(self):
     retnode = Node(Nonterminals.ELIFS)  

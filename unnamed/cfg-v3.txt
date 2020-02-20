@@ -10,8 +10,8 @@ elifs -> ELSE LCURL statements RCURL
 elifs ->
 
 statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
-looprules -> test
-looprules -> decl COMMA test COMMA assignment
+looprules -> bexpr
+looprules -> decl COMMA bexpr COMMA assignment
 
 statement -> PRINT bexpr
 

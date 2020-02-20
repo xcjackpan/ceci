@@ -85,6 +85,33 @@ class Evaluator:
           self._evaluate(node.children[7])
         else:
           raise EvaluateException("If-condition didn't return BOOL")
+    elif length == 7:
+      is_loop = (
+        node.children[0].type == Tokens.LOOP
+        and node.children[1].type == Tokens.LBRAC
+        and node.children[2].type == Nonterminals.LOOPRULES
+        and node.children[3].type == Tokens.RBRAC
+        and node.children[4].type == Tokens.LCURLY
+        and node.children[5].type == Nonterminals.STATEMENTS
+        and node.children[6].type == Tokens.RCURLY
+      )
+      if is_loop:
+        looprules = node.children[2]
+        looprules_length = len(looprules.children)
+        if looprules_length == 1:
+          #TODO: Verify types?
+          condition = self._evaluate(looprules.children[0])
+          while (condition):
+            self._evaluate(node.children[5])
+            condition = self._evaluate(looprules.children[0])
+        elif looprules_length == 5:
+          # STATEMENT/BEXPR COMMA BEXPR COMMA STATEMENT
+          self._evaluate(looprules.children[0])
+          condition = self._evaluate(looprules.children[2])
+          while (condition):
+            self._evaluate(node.children[5])
+            self._evaluate(looprules.children[4])
+            condition = self._evaluate(looprules.children[2])
     elif length == 4:
       is_decl = (
         node.children[0].type == Tokens.LET
