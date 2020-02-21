@@ -16,6 +16,9 @@ class Evaluator:
     # TODO: Refactor into table of tables
     self.symtable = {}
 
+  def update_tree(self, parsetree):
+    self.parsetree = parsetree
+
   def evaluate_tree(self):
     return self._evaluate(self.parsetree)
 

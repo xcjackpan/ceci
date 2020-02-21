@@ -1,4 +1,4 @@
-import sys
+import sys, os, stat
 from unnamed.tokenizer import *
 from unnamed.cfg import *
 from unnamed.evaluate import *
@@ -11,21 +11,44 @@ def preprocess(line):
   return line
 
 def main():
-  program = []
-  for line in sys.stdin:
-    line = preprocess(line)
-    for word in line.split():
-      program.append(word)
+  mode = os.fstat(0).st_mode
+  if stat.S_ISREG(mode) or stat.S_ISFIFO(mode):
+    program = []
+    for line in sys.stdin:
+      line = preprocess(line)
+      for word in line.split():
+        program.append(word)
 
-  tokenized = tokenize(program)
-  #for token in tokenized:
-  #  token.print()
-  parsetree = ParseTree(tokenized)
-  #parsetree.print_tokens()
-  parsed = parsetree.build()
-  #parsed.print()
-  evaluator = Evaluator(parsed)
-  evaluator.evaluate_tree()
+    tokenized = tokenize(program)
+    #for token in tokenized:
+    #  token.print()
+    parsetree = ParseTree(tokenized)
+    #parsetree.print_tokens()
+    parsed = parsetree.build()
+    #parsed.print()
+    evaluator = Evaluator(parsed)
+    evaluator.evaluate_tree()
+  else:
+    print("> ", end="", flush=True)
+    evaluator = Evaluator(None)
+    preprocessed = []
+    for line in sys.stdin:
+      if (line == "quit\n"):
+        print("Bye!", flush=True)
+        return
+      line = preprocess(line)
+      for word in line.split():
+        preprocessed.append(word)
+      tokenized = tokenize(preprocessed)
+      parsetree = ParseTree(tokenized)
+      try:
+        parsed = parsetree.build()
+      except ParseException:
+        continue
+      evaluator.update_tree(parsed)
+      evaluator.evaluate_tree()
+      print("> ", end="", flush=True)
+      preprocessed = []
 
 def run_test(input_program):
   # Driver for tests
@@ -35,12 +58,8 @@ def run_test(input_program):
     program.append(word)
 
   tokenized = tokenize(program)
-  #for token in tokenized:
-  #  token.print()
   parsetree = ParseTree(tokenized)
-  #parsetree.print_tokens()
   parsed = parsetree.build()
-  #parsed.print()
   evaluator = Evaluator(parsed)
   evaluator.evaluate_tree()
 

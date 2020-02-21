@@ -19,6 +19,12 @@ class Node:
     for child in self.children:
       child.print()
 
+class MunchException(Exception):
+  def __init__(self, message=None):
+    if message is None:
+      self.message = "Munch error!"
+    self.message = message
+
 class ParseException(Exception):
   def __init__(self, message=None):
     if message is None:
@@ -56,13 +62,13 @@ class ParseTree:
   def _prev_token(self):
     self.pos -= 1
     if (self.pos < 0):
-      raise ParseException("Out of bounds!")
+      raise MunchException("Out of bounds!")
     return
 
   def _next_token(self):
     self.pos += 1
     if (self.pos > self.length):
-      raise ParseException("Out of bounds!")
+      raise MunchException("Out of bounds!")
     return
 
   def _curr_token(self):
@@ -73,17 +79,18 @@ class ParseTree:
     if munched.token in token_types:
       self._next_token()
       return munched
-    raise ParseException("Parse error at " + self._curr_token().lexeme)
+    raise MunchException("Parse error at " + self._curr_token().lexeme)
 
   def _munch_and_add_chain(self, types, retnode):
     for token_types in types:
       munched = self._munch(token_types)
       retnode.add_child(Node(munched.token, munched))
-    return retnode
+    return True
   
   def _munch_and_add(self, token_types, retnode):
     munched = self._munch(token_types)
     retnode.add_child(Node(munched.token, munched))
+    return True
 
   ##################
   # Building nodes #
@@ -93,7 +100,7 @@ class ParseTree:
     retnode = Node(Nonterminals.STATEMENTS)
     try:
       retnode.add_child(self._statement())
-    except ParseException:
+    except MunchException:
       return None
 
     retnode.add_child(self._statements())
@@ -102,9 +109,9 @@ class ParseTree:
   def _statement(self):
     retnode = Node(Nonterminals.STATEMENT)
     statement_tokens = []
-
+    munched = False
     try:
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.LOOP],
           [Tokens.LBRAC],
@@ -112,7 +119,7 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._looprules())
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.RBRAC],
           [Tokens.LCURLY],
@@ -120,13 +127,15 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._statements())
-      self._munch_and_add([Tokens.RCURLY], retnode)
+      munched = self._munch_and_add([Tokens.RCURLY], retnode)
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.STATEMENT)
 
     try:
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.IF],
           [Tokens.LBRAC],
@@ -134,7 +143,7 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._bexpr())
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.RBRAC],
           [Tokens.LCURLY],
@@ -142,15 +151,17 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._statements())
-      self._munch_and_add([Tokens.RCURLY], retnode)
+      munched = self._munch_and_add([Tokens.RCURLY], retnode)
       retnode.add_child(self._elif())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.STATEMENT)
 
     try:
       # Declaring a variable
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.LET],
           [Tokens.ID],
@@ -161,12 +172,14 @@ class ParseTree:
 
       retnode.add_child(self._bexpr())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.STATEMENT)
 
     try:
       # Assigning a variable
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.ID],
           [Tokens.BECOMES],
@@ -176,7 +189,9 @@ class ParseTree:
 
       retnode.add_child(self._bexpr())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.STATEMENT)
 
     try:
@@ -185,7 +200,9 @@ class ParseTree:
       # TODO: What else could be printed??
       retnode.add_child(self._bexpr())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.STATEMENT)
 
     retnode.add_child(self._bexpr())
@@ -194,27 +211,31 @@ class ParseTree:
 
   def _looprules(self):
     retnode = Node(Nonterminals.LOOPRULES)
+    munched = False
     try:
       retnode.add_child(self._bexpr())
-    except ParseException:
+    except MunchException:
       retnode.add_child(self._statement())
 
     try:
       # Could be while
-      self._munch_and_add([Tokens.COMMA], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.COMMA], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException
       return retnode
     
     # Must be for
     retnode.add_child(self._bexpr())
-    self._munch_and_add([Tokens.COMMA], retnode)
+    munched = self._munch_and_add([Tokens.COMMA], retnode)
     retnode.add_child(self._statement())
     return retnode
 
   def _elif(self):
-    retnode = Node(Nonterminals.ELIFS)  
+    retnode = Node(Nonterminals.ELIFS)
+    munched = False
     try:
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.ELIF],
           [Tokens.LBRAC],
@@ -222,7 +243,7 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._bexpr())
-      self._munch_and_add_chain(
+      munched = self._munch_and_add_chain(
         [
           [Tokens.RBRAC],
           [Tokens.LCURLY],
@@ -230,15 +251,19 @@ class ParseTree:
         retnode,
       )
       retnode.add_child(self._statements())
-      self._munch_and_add([Tokens.RCURLY], retnode)
+      munched = self._munch_and_add([Tokens.RCURLY], retnode)
       retnode.add_child(self._elif())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.ELIFS)
 
     try:
-      self._munch_and_add([Tokens.ELSE], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.ELSE], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException
       return Node(Nonterminals.ELIFS)
 
     self._munch_and_add([Tokens.LCURLY], retnode)
@@ -254,9 +279,12 @@ class ParseTree:
 
   def _bexprF(self):
     retnode = Node(Nonterminals.BEXPRF)
+    munched = False
     try:
-      self._munch_and_add([Tokens.AND, Tokens.OR], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.AND, Tokens.OR], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException
       return None
 
     retnode.add_child(self._test())
@@ -265,13 +293,16 @@ class ParseTree:
 
   def _test(self):
     retnode = Node(Nonterminals.TEST)
+    munched = False
     # Try to munch an OP
     try:
       # Could be not test
-      self._munch_and_add([Tokens.NOT], retnode)
+      munched = self._munch_and_add([Tokens.NOT], retnode)
       retnode.add_child(self._test())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       retnode = Node(Nonterminals.TEST)
 
     retnode.add_child(self._expr())
@@ -289,7 +320,9 @@ class ParseTree:
       )
       retnode.add_child(self._expr())
       return retnode
-    except ParseException:
+    except MunchException:
+      if munched:
+        raise ParseException
       return retnode
 
   def _expr(self):
@@ -300,9 +333,12 @@ class ParseTree:
 
   def _exprF(self):
     retnode = Node(Nonterminals.EXPRF)
+    munched = False
     try:
-      self._munch_and_add([Tokens.PLUS, Tokens.MINUS], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.PLUS, Tokens.MINUS], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException 
       return None
 
     retnode.add_child(self._factor())
@@ -317,9 +353,12 @@ class ParseTree:
 
   def _factorF(self):
     retnode = Node(Nonterminals.FACTORF)
+    munched = False
     try:
-      self._munch_and_add([Tokens.MULT, Tokens.DIV], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.MULT, Tokens.DIV], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException
       return None
 
     retnode.add_child(self._pow())
@@ -334,9 +373,12 @@ class ParseTree:
 
   def _powF(self):
     retnode = Node(Nonterminals.POWF)
+    munched = False
     try:
-      self._munch_and_add([Tokens.EXP], retnode)
-    except ParseException:
+      munched = self._munch_and_add([Tokens.EXP], retnode)
+    except MunchException:
+      if munched:
+        raise ParseException
       return None
 
     retnode.add_child(self._term())
@@ -348,20 +390,20 @@ class ParseTree:
     try:
       self._munch_and_add([Tokens.TRUE, Tokens.FALSE], retnode)
       return retnode
-    except ParseException:
+    except MunchException:
       pass
 
     try:
       self._munch_and_add([Tokens.ID, Tokens.NUM], retnode)
       return retnode
-    except ParseException:
+    except MunchException:
       pass
       
     try:
       self._munch_and_add([Tokens.MINUS], retnode)
       retnode.add_child(self._term())
       return retnode
-    except ParseException:
+    except MunchException:
       # Must be LBRAC expr RBRAC
       pass
 
