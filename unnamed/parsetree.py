@@ -388,6 +388,20 @@ class ParseTree:
   def _term(self):
     retnode = Node(Nonterminals.TERM)
     try:
+      self._munch_and_add([Tokens.QUOTE], retnode)
+      # Eat tokens until you eat a string
+      while True:
+        try:
+          self._munch_and_add([Tokens.QUOTE], retnode)
+          break
+        except MunchException:
+          self._munch_and_add([Tokens.STRING], retnode)
+
+      return retnode
+    except MunchException:
+      pass
+
+    try:
       self._munch_and_add([Tokens.TRUE, Tokens.FALSE], retnode)
       return retnode
     except MunchException:

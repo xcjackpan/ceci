@@ -264,19 +264,25 @@ class Evaluator:
 
   def _term(self, node):
     length = len(node.children)
-    if length == 1:
-      # Either an ID or a num
-      if node.children[0].type == Tokens.ID:
-        return self._get_from_symtable(node.children[0].token.lexeme)
-      elif node.children[0].type == Tokens.NUM:
-        return int(node.children[0].token.lexeme)
-      elif node.children[0].type == Tokens.TRUE:
-        return True
-      elif node.children[0].type == Tokens.FALSE:
-        return False
-    elif length == 2:
-      # Unary minus
-      return -1 * self._term(node.children[1])
-    else:
-      # Expression in brackets
-      return self._bexpr(node.children[1])
+    if length >= 1:
+      if node.children[0].type == Tokens.QUOTE:
+        ret = ""
+        for node in node.children[1:-1]:
+          ret = ret + " " + node.token.lexeme
+        return ret[1:]
+      elif length == 1:
+        # Either an ID or a num
+        if node.children[0].type == Tokens.ID:
+          return self._get_from_symtable(node.children[0].token.lexeme)
+        elif node.children[0].type == Tokens.NUM:
+          return int(node.children[0].token.lexeme)
+        elif node.children[0].type == Tokens.TRUE:
+          return True
+        elif node.children[0].type == Tokens.FALSE:
+          return False
+      elif length == 2:
+        # Unary minus
+        return -1 * self._term(node.children[1])
+      else:
+        # Expression in brackets
+        return self._bexpr(node.children[1])

@@ -14,7 +14,7 @@ class Tokens:
   BREAK = 12
   RETURN = 13
   FUNCTION = 14
-  CALL_FUNC = 15 #Being used?
+  QUOTE = 15
   PRINT = 16
   COLON = 17
   AND = 18
@@ -40,6 +40,7 @@ class Tokens:
   NOT = 38
   ELIF = 39
   ELSE = 40
+  STRING = 41
 
   LEXEMES = {
     "//": COMMENT,
@@ -56,6 +57,7 @@ class Tokens:
     "break": BREAK,
     "return": RETURN,
     "function": FUNCTION,
+    "\"": QUOTE,
     "print": PRINT,
     ":": COLON,
     "and": AND,
@@ -83,9 +85,11 @@ class Tokens:
   }
 
 class Token:
-  def __init__(self, lexeme):
+  def __init__(self, lexeme, in_quote):
     self.lexeme = lexeme
-    if lexeme in Tokens.LEXEMES:
+    if in_quote:
+      self.token = Tokens.STRING
+    elif lexeme in Tokens.LEXEMES:
       self.token = Tokens.LEXEMES[lexeme]
     elif len(lexeme) == 1:
       #Either digit or ID
@@ -105,8 +109,17 @@ class TokenException(Exception):
       self.message = message
 
 def tokenize(program):
-  tokenized_program = [Token("BOF")]
+  tokenized_program = [Token("BOF", False)]
+  in_quote = False
   for token in program:
-    tokenized_program.append(Token(token))
-  tokenized_program.append(Token("EOF"))
+    if token == "\"":
+      if not in_quote:
+        tokenized_program.append(Token(token, in_quote))
+        in_quote = True
+      elif in_quote:
+        in_quote = False
+        tokenized_program.append(Token(token, in_quote))
+    else:
+      tokenized_program.append(Token(token, in_quote))
+  tokenized_program.append(Token("EOF", False))
   return tokenized_program
