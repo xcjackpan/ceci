@@ -61,16 +61,15 @@ For example, `A -> aa, A -> AA, A -> a` is an *ambiguous* grammar since the stri
 two nontrivially distinct ways.
 
 For obvious reasons, I tried really hard to make sure my grammar was unambiguous when I designed my language. This worked
-well for the most part, but I had overlooked a key detail which I only realized when working with functions:
-  - Consider the input `1 + a(12)`.
-  - I use whitespace as a delimiter and to make my life while tokenizing easier, I preprocessed by inserting spaces 
-    between every token. This means my parser receives `1 + a ( 12 )` as input.
-  - But I can generate `1 + a ( 12 )` as either of the following:
-      `1 + a(12) \\Arithmetic with the result of a function call`
-      ```
-      1 + a \\Arithmetic
+well for the most part, but I had overlooked a key detail which I only realized when working with functions.
+Consider the input `1 + a(12)`. I use whitespace as a delimiter and to make my life while tokenizing easier, I preprocessed by inserting spaces between every token. This means my parser receives `1 + a ( 12 )` as input. But I can generate `1 + a ( 12 )` as either of the following:
+  - ```
+      1 + a(12) \\Arithmetic with the result of a function call
+    ```
+  -  ```
+      1 + a \\Constant plus a variable
       (12) \\Constant wrapped in brackets: a valid mathematical expression
-      ```
+    ```
 As a result, my grammar in `cfg-v3.txt` is ambiguous which means I won't be able to correctly parse it.
 
 ### SOLUTION: Working on it
