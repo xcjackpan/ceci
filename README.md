@@ -66,7 +66,7 @@ Consider the input `1 + a(12)`. I use whitespace as a delimiter and to make my l
   - ```
       1 + a(12) \\Arithmetic with the result of a function call
     ```
-  -  ```
+  - ```
       1 + a \\Constant plus a variable
       (12) \\Constant wrapped in brackets: a valid mathematical expression
     ```
