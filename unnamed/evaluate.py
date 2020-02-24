@@ -13,8 +13,8 @@ class EvaluateException(Exception):
 class Evaluator:
   def __init__(self, parsetree):
     self.parsetree = parsetree
-    # TODO: Refactor into table of tables
     self.symtable = {}
+    self.function_to_node = {}
 
   def update_tree(self, parsetree):
     self.parsetree = parsetree
@@ -286,3 +286,10 @@ class Evaluator:
       else:
         # Expression in brackets
         return self._bexpr(node.children[1])
+
+class FunctionEvaluator(Evaluator):
+  # Used to run functions
+  def __init__(self, parsetree, params, function_to_node):
+    self.parsetree = parsetree
+    self.symtable = params
+    self.function_to_node = function_to_node

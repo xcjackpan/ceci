@@ -1,1 +1,4 @@
-print "Hello World"
+function test(a, b) {
+  print a
+  print b
+}

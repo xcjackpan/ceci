@@ -113,6 +113,31 @@ class ParseTree:
     try:
       munched = self._munch_and_add_chain(
         [
+          [Tokens.FUNCTION],
+          [Tokens.ID],
+          [Tokens.LBRAC],
+        ],
+        retnode,
+      )
+      retnode.add_child(self._args())
+      munched = self._munch_and_add_chain(
+        [
+          [Tokens.RBRAC],
+          [Tokens.LCURLY],
+        ],
+        retnode,
+      )
+      retnode.add_child(self._statements())
+      munched = self._munch_and_add([Tokens.RCURLY], retnode)
+      return retnode
+    except MunchException:
+      if munched:
+        raise ParseException
+      retnode = Node(Nonterminals.STATEMENT)
+
+    try:
+      munched = self._munch_and_add_chain(
+        [
           [Tokens.LOOP],
           [Tokens.LBRAC],
         ],
@@ -208,6 +233,20 @@ class ParseTree:
     retnode.add_child(self._bexpr())
     return retnode
     #TODO: Other statement types
+
+  def _args(self):
+    retnode = Node(Nonterminals.ARGS)
+    munched = False
+    try:
+      # If we can't munch an expr, return empty Node
+      retnode.add_child(self._bexpr())
+      # If we munched a bexpr but not a comma, return the Node with the bexpr child
+      self._munch_and_add([Tokens.COMMA], retnode)
+    except MunchException:
+      return retnode
+    
+    retnode.add_child(self._args())
+    return retnode
 
   def _looprules(self):
     retnode = Node(Nonterminals.LOOPRULES)

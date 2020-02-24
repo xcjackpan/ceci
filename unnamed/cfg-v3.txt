@@ -3,7 +3,10 @@ program -> BOF statement statements EOF
 statements -> statement statements
 statements ->
 
-# TODO: Fix test grammar ... should be recursive
+statement -> FUNCTION ID LBRAC args RBRAC LCURL statements RCURL
+args -> bexprf COMMA args
+args ->
+
 statement -> IF LBRAC bexpr RBRAC LCURL statements RCURL elifs
 elifs -> ELIF LBRAC bexpr RBRAC LCURL statements RCURL elifs
 elifs -> ELSE LCURL statements RCURL
@@ -28,7 +31,7 @@ decl -> LET ID BECOMES bexpr
 expr -> FUNC
 FUNC -> ID LBRAC params RBRAC
 
-params -> bexpr COMMA params
+params -> ID COMMA params
 params ->
 
 func -> func INTO func
