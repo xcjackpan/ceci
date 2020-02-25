@@ -196,6 +196,7 @@ class ParseTree:
       )
 
       retnode.add_child(self._bexpr())
+      munched = self._munch_and_add([Tokens.SEMICOLON], retnode)
       return retnode
     except MunchException:
       if munched:
@@ -213,6 +214,7 @@ class ParseTree:
       )
 
       retnode.add_child(self._bexpr())
+      munched = self._munch_and_add([Tokens.SEMICOLON], retnode)
       return retnode
     except MunchException:
       if munched:
@@ -224,6 +226,7 @@ class ParseTree:
       munched = self._munch_and_add([Tokens.PRINT], retnode)
       # TODO: What else could be printed??
       retnode.add_child(self._bexpr())
+      munched = self._munch_and_add([Tokens.SEMICOLON], retnode)
       return retnode
     except MunchException:
       if munched:
@@ -231,6 +234,7 @@ class ParseTree:
       retnode = Node(Nonterminals.STATEMENT)
 
     retnode.add_child(self._bexpr())
+    self._munch_and_add([Tokens.SEMICOLON], retnode)
     return retnode
     #TODO: Other statement types
 
@@ -250,24 +254,17 @@ class ParseTree:
 
   def _looprules(self):
     retnode = Node(Nonterminals.LOOPRULES)
-    munched = False
     try:
       retnode.add_child(self._bexpr())
-    except MunchException:
-      retnode.add_child(self._statement())
-
-    try:
-      # Could be while
-      munched = self._munch_and_add([Tokens.COMMA], retnode)
-    except MunchException:
-      if munched:
-        raise ParseException
       return retnode
-    
-    # Must be for
-    retnode.add_child(self._bexpr())
-    munched = self._munch_and_add([Tokens.COMMA], retnode)
+    except MunchException:
+      pass
+
     retnode.add_child(self._statement())
+    retnode.add_child(self._bexpr())
+    self._munch_and_add([Tokens.SEMICOLON], retnode)
+    retnode.add_child(self._statement())
+
     return retnode
 
   def _elif(self):

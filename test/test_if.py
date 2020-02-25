@@ -4,68 +4,68 @@ from unnamed.parsetree import ParseException
 from test.base_test_case import BaseTestCase
 
 simple0 = """
-            let a = 1
-            let b = 2
+            let a = 1;
+            let b = 2;
             if (a > b) {
-              print 0
+              print 0;
             } elif (b > a) {
-              print 1
+              print 1;
             }
           """
 simple1 = """
-            let a = 1
-            let b = 2
+            let a = 1;
+            let b = 2;
             if (a > b) {
-              print 0
+              print 0;
             } else {
-              print 1
+              print 1;
             }
           """
 simple2 = """
-            let a = 1
-            let b = 2
+            let a = 1;
+            let b = 2;
             if (a < b) {
-              print 0
+              print 0;
             } else {
-              print 1
+              print 1;
             }
           """
 simple3 = """
-            let a = 1
-            let b = 2
+            let a = 1;
+            let b = 2;
             if (a < b) {
-              print 0
+              print 0;
             }
-            print 1
+            print 1;
           """
 simple4 = """
-            let a = 1
-            let b = 2
+            let a = 1;
+            let b = 2;
             if (a > b) {
-              print 0
+              print 0;
             }
-            print 1
+            print 1;
           """
 simple5 = """
             if (True) {
-              print 0
+              print 0;
               if (True) {
-                print 1
+                print 1;
               } elif (True) {
-                print 2
+                print 2;
               }
             }
           """
 simple6 = """
             if (True) {
-              print 0
+              print 0;
               if (False) {
-                print 1
+                print 1;
               } elif (False) {
-                print 2
+                print 2;
               } else {
                 if (False) {
-                  print 1
+                  print 1;
                 }
               }
             }
@@ -73,34 +73,34 @@ simple6 = """
 simple7 = """
             if (True) { }
             if (False) { }
-            print 0
+            print 0;
           """
 except0 = """
             elif (False) {
-              print 1
+              print 1;
             }
           """
 except1 = """
             else (False) {
-              print 1
+              print 1;
             }
           """
 except2 = """
             if (True) {
-              print 1
+              print 1;
           """
 edge0 = """
           if (10 + 1) {
-            print 0
+            print 0;
           } else {
-            print 1
+            print 1;
           }
         """
 edge1 = """
           if (1 - 1) {
-            print 0
+            print 0;
           } else {
-            print 1
+            print 1;
           }
         """
 

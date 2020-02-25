@@ -41,6 +41,7 @@ class Tokens:
   ELIF = 39
   ELSE = 40
   STRING = 41
+  SEMICOLON = 42
 
   LEXEMES = {
     "//": COMMENT,
@@ -82,6 +83,7 @@ class Tokens:
     "EOF": EOF,
     "elif": ELIF,
     "else": ELSE,
+    ";": SEMICOLON,
   }
 
 class Token:

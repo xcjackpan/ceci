@@ -3,35 +3,35 @@ from unnamed.evaluate import EvaluateException
 from test.base_test_case import BaseTestCase
 
 simple0 = """
-            print True
-            print False
+            print True;
+            print False;
           """
 simple1 = """
-            print True and False
-            print False and True
-            print True or False
-            print False or True
+            print True and False;
+            print False and True;
+            print True or False;
+            print False or True;
           """
 simple2 = """
-            print (False or True) and (False or True)
-            print (True and False) or (True and False)
+            print (False or True) and (False or True);
+            print (True and False) or (True and False);
           """
 simple3 = """
-            print True and (False or True) and True
+            print True and (False or True) and True;
           """
 math0 = """
-            print 1 + 2 < 3
-            print 1 + 2 < 3 + 2
-            print 1 + 2 == 3
-            print 1 + 2 == 3 + 2
-            print 1 + 2 > 3
-            print 1 + 2 > 3 + 2
-            print 1 + 2 >= 3
-            print 1 + 2 >= 3 + 2
-            print 1 + 2 <= 3
-            print 1 + 2 <= 3 + 2
-            print 1 + 2 != 3
-            print 1 + 2 != 3 + 2
+            print 1 + 2 < 3;
+            print 1 + 2 < 3 + 2;
+            print 1 + 2 == 3;
+            print 1 + 2 == 3 + 2;
+            print 1 + 2 > 3;
+            print 1 + 2 > 3 + 2;
+            print 1 + 2 >= 3;
+            print 1 + 2 >= 3 + 2;
+            print 1 + 2 <= 3;
+            print 1 + 2 <= 3 + 2;
+            print 1 + 2 != 3;
+            print 1 + 2 != 3 + 2;
           """
 
 class BooleanExpressionTest(BaseTestCase):

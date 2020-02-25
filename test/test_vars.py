@@ -3,59 +3,59 @@ from unnamed.evaluate import EvaluateException
 from test.base_test_case import BaseTestCase
 
 simple0 = """
-            let a = 5
-            print a
+            let a = 5;
+            print a;
           """
 simple1 = """
-            let a = 5
-            let b = 3
-            print b
-            print a
+            let a = 5;
+            let b = 3;
+            print b;
+            print a;
           """
 simple2 = """
-            let a = 5
-            let b = 3
-            print b + 1
-            print b - 1
-            print b
-            print b * 2
-            print b ^ 2
+            let a = 5;
+            let b = 3;
+            print b + 1;
+            print b - 1;
+            print b;
+            print b * 2;
+            print b ^ 2;
           """
 reassign0 = """
-              let a = 0
-              print a
-              a = 1
-              print a
-              a = 0
-              print a
+              let a = 0;
+              print a;
+              a = 1;
+              print a;
+              a = 0;
+              print a;
             """
 reassign1 = """
-              let a = 1
-              print a
-              a = a + a + a
-              print a
-              a = a - a
-              print a
+              let a = 1;
+              print a;
+              a = a + a + a;
+              print a;
+              a = a - a;
+              print a;
             """
 reassign2 = """
-              let a = 1
-              let b = 2
-              print a
-              a = b
-              print a
-              a = a + b + 2
-              print a
-              print b
+              let a = 1;
+              let b = 2;
+              print a;
+              a = b;
+              print a;
+              a = a + b + 2;
+              print a;
+              print b;
             """
 except0 = """
-            print a
+            print a;
           """
 except1 = """
-            a = 5
+            a = 5;
           """
 except2 = """
-            let b = 0
-            b = a + 1
+            let b = 0;
+            b = a + 1;
           """
 
 class VarsTest(BaseTestCase):

@@ -107,46 +107,50 @@ class Evaluator:
           while (condition):
             self._evaluate(node.children[5])
             condition = self._evaluate(looprules.children[0])
-        elif looprules_length == 5:
-          # STATEMENT/BEXPR COMMA BEXPR COMMA STATEMENT
+        elif looprules_length == 4:
+          # STATEMENT/BEXPR BEXPR SEMICOLON STATEMENT
           self._evaluate(looprules.children[0])
-          condition = self._evaluate(looprules.children[2])
+          condition = self._evaluate(looprules.children[1])
           while (condition):
             self._evaluate(node.children[5])
-            self._evaluate(looprules.children[4])
-            condition = self._evaluate(looprules.children[2])
-    elif length == 4:
+            self._evaluate(looprules.children[3])
+            condition = self._evaluate(looprules.children[1])
+    elif length == 5:
       is_decl = (
         node.children[0].type == Tokens.LET
         and node.children[1].type == Tokens.ID
         and node.children[2].type == Tokens.BECOMES
         and node.children[3].type == Nonterminals.BEXPR
+        and node.children[4].type == Tokens.SEMICOLON
       )
       if is_decl:
         result = self._evaluate(node.children[3])
         self._add_to_symtable(node.children[1].token.lexeme, result)
-    elif length == 3:
+    elif length == 4:
       is_assignment = (
         node.children[0].type == Tokens.ID
         and node.children[1].type == Tokens.BECOMES
         and node.children[2].type == Nonterminals.BEXPR
+        and node.children[3].type == Tokens.SEMICOLON
       )
       if is_assignment:
         result = self._evaluate(node.children[2])
         self._update_in_symtable(node.children[0].token.lexeme, result)
-    elif length == 2:
+    elif length == 3:
       is_print = (
         node.children[0].type == Tokens.PRINT
         and node.children[1].type == Nonterminals.BEXPR
+        and node.children[2].type == Tokens.SEMICOLON
       )
       if is_print:
         result = self._evaluate(node.children[1])
         print(str(result))
-    elif length == 1:
-      if node.children[0].type == Nonterminals.EXPR:
-        return self._expr(node.children[0])
-      elif node.children[0].type == Nonterminals.TEST:
-        return self._test(node.children[0])
+    elif length == 2:
+      if node.children[1].type == Tokens.SEMICOLON:
+        if node.children[0].type == Nonterminals.EXPR:
+          return self._expr(node.children[0])
+        elif node.children[0].type == Nonterminals.TEST:
+          return self._test(node.children[0])
 
   def _elifs(self, node):
     length = len(node.children)
