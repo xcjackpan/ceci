@@ -36,7 +36,7 @@ def main():
     preprocessed = []
     for line in sys.stdin:
       if (line == "quit\n"):
-        print("Bye!", flush=True)
+        print("> Bye!", flush=True)
         return
       line = preprocess(line)
       for word in line.split():

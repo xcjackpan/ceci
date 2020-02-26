@@ -111,6 +111,16 @@ class ParseTree:
     statement_tokens = []
     munched = False
     try:
+      munched = self._munch_and_add([Tokens.RETURN], retnode)
+      retnode.add_child(self._bexpr())
+      munched = self._munch_and_add([Tokens.SEMICOLON], retnode)
+      return retnode
+    except MunchException:
+      if munched:
+        raise ParseException
+      retnode = Node(Nonterminals.STATEMENT)
+
+    try:
       munched = self._munch_and_add_chain(
         [
           [Tokens.FUNCTION],
@@ -119,7 +129,7 @@ class ParseTree:
         ],
         retnode,
       )
-      retnode.add_child(self._args())
+      retnode.add_child(self._params())
       munched = self._munch_and_add_chain(
         [
           [Tokens.RBRAC],
@@ -250,6 +260,20 @@ class ParseTree:
       return retnode
     
     retnode.add_child(self._args())
+    return retnode
+
+  def _params(self):
+    retnode = Node(Nonterminals.PARAMS)
+    munched = False
+    try:
+      # If we can't munch an expr, return empty Node
+      self._munch_and_add([Tokens.ID], retnode)
+      # If we munched a bexpr but not a comma, return the Node with the bexpr child
+      self._munch_and_add([Tokens.COMMA], retnode)
+    except MunchException:
+      return retnode
+    
+    retnode.add_child(self._params())
     return retnode
 
   def _looprules(self):
@@ -444,7 +468,26 @@ class ParseTree:
       pass
 
     try:
-      self._munch_and_add([Tokens.ID, Tokens.NUM], retnode)
+      self._munch_and_add([Tokens.NUM], retnode)
+      return retnode
+    except MunchException:
+      pass
+
+    try:
+      # Need to tell the difference between ID and function call
+      print(1, flush=True)
+      self._munch_and_add([Tokens.ID], retnode)
+      print(2, flush=True)
+      try:
+        munched = False
+        munched = self._munch_and_add([Tokens.LBRAC], retnode)
+        retnode.add_child(self._args())
+        munched = self._munch_and_add([Tokens.RBRAC], retnode)
+        return retnode
+      except MunchException:
+        if munched:
+          raise ParseException
+      print(3, flush=True)
       return retnode
     except MunchException:
       pass

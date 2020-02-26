@@ -1,3 +1,8 @@
-loop (let i = 0; i < 5; i = i + 1;) {
-  print i;
+function max(a, b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
 }
+print max(6,6);

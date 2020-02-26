@@ -10,17 +10,40 @@ class EvaluateException(Exception):
       self.message = "Evaluation error!"
     self.message = message
 
+class ReturnValue(Exception):
+  # Pretty hacky tbh but I don't have a good way to stop evaluating the
+  # tree with my current code structure
+  def __init__(self, value=None):
+    self.value = value
+
 class Evaluator:
   def __init__(self, parsetree):
     self.parsetree = parsetree
     self.symtable = {}
-    self.function_to_node = {}
+    self.functable = {}
 
   def update_tree(self, parsetree):
     self.parsetree = parsetree
 
   def evaluate_tree(self):
-    return self._evaluate(self.parsetree)
+    try:
+      return self._evaluate(self.parsetree)
+    except ReturnValue as r:
+      return r.value
+
+  ##########################
+  # Symtable and functable #
+  ##########################
+
+  def _add_to_functable(self, name, node):
+    if name in self.functable:
+      raise EvaluateException(name + " is already declared!")
+    self.functable[name] = node
+
+  def _get_from_functable(self, name):
+    if name not in self.functable:
+      raise EvaluateException(name + " is not defined!")
+    return self.functable[name]
 
   def _add_to_symtable(self, name, value=None):
     if name in self.symtable:
@@ -37,14 +60,21 @@ class Evaluator:
       raise EvaluateException(name + " is not defined!")
     self.symtable[name] = value  
 
+  ####################
+  # Evaluating nodes #
+  ####################
+
   def _evaluate(self, node):
     if node.type == Nonterminals.STATEMENTS:
-      self._statements(node)
-      return None
+      return self._statements(node)
     elif node.type == Nonterminals.STATEMENT:
       return self._statement(node)
     elif node.type == Nonterminals.ELIFS:
       return self._elifs(node)
+    elif node.type == Nonterminals.ARGS:
+      return self._args(node)
+    elif node.type == Nonterminals.PARAMS:
+      return self._params(node)
     elif node.type == Nonterminals.BEXPR:
       return self._bexpr(node)
     elif node.type == Nonterminals.BEXPRF:
@@ -61,11 +91,16 @@ class Evaluator:
       return self._term(node)
 
   def _statements(self, node):
-    if len(node.children) == 2:
-      self._statement(node.children[0])
-      self._statements(node.children[1])
-    elif len(node.children) == 1:
-      self._statement(node.children[0])
+    # RETURN needs to be done here since it must stop execution of the program
+    length = len(node.children)
+    if length > 0:
+      if self._is_return(node.children[0]):
+        raise ReturnValue(self._evaluate(node.children[0].children[1]))
+      elif length == 2:
+        self._statement(node.children[0])
+        return self._statements(node.children[1])
+      elif length == 1:
+        self._statement(node.children[0])
 
   def _statement(self, node):
     length = len(node.children)
@@ -88,6 +123,19 @@ class Evaluator:
           self._evaluate(node.children[7])
         else:
           raise EvaluateException("If-condition didn't return BOOL")
+
+      is_function = (
+        node.children[0].type == Tokens.FUNCTION
+        and node.children[1].type == Tokens.ID
+        and node.children[2].type == Tokens.LBRAC
+        and node.children[3].type == Nonterminals.PARAMS
+        and node.children[4].type == Tokens.RBRAC
+        and node.children[5].type == Tokens.LCURLY
+        and node.children[6].type == Nonterminals.STATEMENTS
+        and node.children[7].type == Tokens.RCURLY
+      )
+      if is_function:
+        self._add_to_functable(node.children[1].token.lexeme, node)
     elif length == 7:
       is_loop = (
         node.children[0].type == Tokens.LOOP
@@ -151,6 +199,31 @@ class Evaluator:
           return self._expr(node.children[0])
         elif node.children[0].type == Nonterminals.TEST:
           return self._test(node.children[0])
+
+  def _args(self, node):
+    # Returns an array of argument values in order
+    length = len(node.children)
+    if length == 0:
+      return []
+    elif length == 1:
+      return [self._evaluate(node.children[0])]
+    elif length == 3:
+      other_args = self._evaluate(node.children[2])
+      other_args.insert(0, self._evaluate(node.children[0]))
+      return other_args
+
+  def _params(self, node):
+    # Returns an array of param names in order
+    # TODO: Update with PIPE
+    length = len(node.children)
+    if length == 0:
+      return []
+    elif length == 1:
+      return [node.children[0].token.lexeme]
+    elif length == 3:
+      other_params = self._evaluate(node.children[2])
+      other_params.insert(0, node.children[0].token.lexeme)
+      return other_params
 
   def _elifs(self, node):
     length = len(node.children)
@@ -287,13 +360,62 @@ class Evaluator:
       elif length == 2:
         # Unary minus
         return -1 * self._term(node.children[1])
-      else:
-        # Expression in brackets
-        return self._bexpr(node.children[1])
+      elif length == 3:
+        if (
+          node.children[0].type == Tokens.LBRAC
+          and node.children[2].type == Tokens.RBRAC
+        ):
+          # Expression in brackets
+          return self._bexpr(node.children[1])
+      elif length == 4:
+        is_function_call = (
+          node.children[0].type == Tokens.ID
+          and node.children[1].type == Tokens.LBRAC
+          and node.children[2].type == Nonterminals.ARGS
+          and node.children[3].type == Tokens.RBRAC
+        )
+        if is_function_call:
+          function_name = node.children[0].token.lexeme
+          function_node = self._get_from_functable(function_name)
+          self._evaluate(node.children[2])
+          function_evaluator = FunctionEvaluator(
+            function_node,
+            self._evaluate(node.children[2]),
+            self.functable
+          )
+          return function_evaluator.evaluate_tree()
+
+  ###########
+  # Helpers #
+  ###########
+
+  def _is_return(self, node):
+    return (
+      node.children[0].type == Tokens.RETURN
+      and node.children[1].type == Nonterminals.BEXPR
+      and node.children[2].type == Tokens.SEMICOLON
+    )
 
 class FunctionEvaluator(Evaluator):
   # Used to run functions
-  def __init__(self, parsetree, params, function_to_node):
+  def __init__(self, parsetree, args, functable):
     self.parsetree = parsetree
-    self.symtable = params
-    self.function_to_node = function_to_node
+    self.functable = functable
+    self.symtable = self._build_initial_symtable(args)
+
+  def evaluate_tree(self):
+    function_body_node = self.parsetree.children[6]
+    if function_body_node.type != Nonterminals.STATEMENTS:
+      raise EvaluateException("Didn't get function body!")
+
+    try:
+      return self._evaluate(function_body_node)
+    except ReturnValue as r:
+      return r.value
+
+  def _build_initial_symtable(self, args):
+    params_node = self.parsetree.children[3]
+    if params_node.type != Nonterminals.PARAMS:
+      raise EvaluateException("Didn't get params!")
+    params = self._evaluate(params_node)
+    return dict(zip(params, args))
