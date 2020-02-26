@@ -39,9 +39,6 @@ class ParseTree:
     self.length = len(program)
 
   def build(self):
-    # TODO: Parsing TEST vs parsing EXPR
-    # We can make TEST a node above EXPR ... make the boolean
-    # ops be evaluated last, have type errors be EvaluateErrors
     self._munch([Tokens.BOF])
 
     retval = self._statements()
@@ -79,7 +76,7 @@ class ParseTree:
     if munched.token in token_types:
       self._next_token()
       return munched
-    raise MunchException("Parse error at " + self._curr_token().lexeme)
+    raise MunchException("Munch error at " + self._curr_token().lexeme)
 
   def _munch_and_add_chain(self, types, retnode):
     for token_types in types:
@@ -215,6 +212,8 @@ class ParseTree:
 
     try:
       # Assigning a variable
+      # TODO: Consider prefixes of the following
+      # `a` vs `a = 10`
       munched = self._munch_and_add_chain(
         [
           [Tokens.ID],
@@ -234,7 +233,6 @@ class ParseTree:
     try:
       # Printing a line
       munched = self._munch_and_add([Tokens.PRINT], retnode)
-      # TODO: What else could be printed??
       retnode.add_child(self._bexpr())
       munched = self._munch_and_add([Tokens.SEMICOLON], retnode)
       return retnode
@@ -246,7 +244,7 @@ class ParseTree:
     retnode.add_child(self._bexpr())
     self._munch_and_add([Tokens.SEMICOLON], retnode)
     return retnode
-    #TODO: Other statement types
+    # TODO: Other statement types
 
   def _args(self):
     retnode = Node(Nonterminals.ARGS)
@@ -475,9 +473,7 @@ class ParseTree:
 
     try:
       # Need to tell the difference between ID and function call
-      print(1, flush=True)
       self._munch_and_add([Tokens.ID], retnode)
-      print(2, flush=True)
       try:
         munched = False
         munched = self._munch_and_add([Tokens.LBRAC], retnode)
@@ -487,7 +483,6 @@ class ParseTree:
       except MunchException:
         if munched:
           raise ParseException
-      print(3, flush=True)
       return retnode
     except MunchException:
       pass

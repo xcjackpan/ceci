@@ -1,6 +1,9 @@
+function addOne(a) {
+  return a + 1;
+}
 function max(a, b) {
-  if (a > b) {
-    return a;
+  if (addOne(a) > b) {
+    return addOne(a);
   } else {
     return b;
   }

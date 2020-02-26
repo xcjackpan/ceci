@@ -1,0 +1,68 @@
+program -> BOF statement statements EOF
+
+statements -> statement statements
+statements ->
+
+statement -> FUNCTION ID LBRAC args RBRAC LCURL statements RCURL
+args -> bexpr COMMA args
+args ->
+
+statement -> IF LBRAC bexpr RBRAC LCURL statements RCURL elifs
+elifs -> ELIF LBRAC bexpr RBRAC LCURL statements RCURL elifs
+elifs -> ELSE LCURL statements RCURL
+elifs ->
+
+statement -> LOOP LBRAC looprules RBRAC LCURL statements RCURL
+looprules -> bexpr
+looprules -> decl COMMA bexpr COMMA assignment
+
+statement -> PRINT bexpr
+
+statement -> assignment
+assignment -> ID BECOMES bexpr SEMICOLON
+
+statement -> BREAK
+
+statement -> RETURN expr
+
+statement -> decl
+decl -> LET ID BECOMES bexpr SEMICOLON
+
+expr -> FUNC
+FUNC -> ID LBRAC params RBRAC
+
+params -> ID COMMA params
+params ->
+
+func -> func INTO func
+
+# BEXPR is a root Nonterminal that becomes an expr
+bexpr -> test bexpr' 
+bexpr' -> AND test bexpr'
+bexpr' -> OR test bexpr'
+bexpr' ->
+test -> expr OPS expr
+test -> expr
+test -> NOT test
+
+expr -> factor expr'
+expr' -> PLUS factor expr'
+expr' -> MINUS factor expr'
+expr' ->
+
+factor -> pow factor'
+factor' -> MULT pow factor'
+factor' -> DIV pow factor'
+factor' ->
+
+pow -> term pow'
+pow' -> EXP term pow'
+pow' ->
+
+term -> ID
+term -> DIGIT
+term -> LBRAC bexpr RBRAC
+term -> MINUS term
+term -> True
+term -> False
+term -> QUOTE STRING .... QUOTE
