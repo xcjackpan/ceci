@@ -3,6 +3,9 @@ These are some notes I'm keeping for stuff I learn along the way.
 (This is mostly a learning exercise/for fun so pardon my use of an interpreted language to build
 another interpreted language.)
 
+- To run unittests: `python -m unitttest`
+- To run shell-mode: `python -m unnamed.unnamed`
+
 ## Order of operations
 The terminals that are "deeper" down a parse tree are evaluated first. By having higher-precedence operations
 be derived from more rules, our grammar can naturally the mathematical order of operations.

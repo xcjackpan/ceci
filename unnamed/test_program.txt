@@ -1,11 +1,8 @@
-function addOne(a) {
-  return a + 1;
+function printNumber(a) {
+  print 1;
+  return 0;
 }
-function max(a, b) {
-  if (addOne(a) > b) {
-    return addOne(a);
-  } else {
-    return b;
-  }
+let a = 0;
+loop(let i = 0; i < 10; i = i + 1;) {
+  a = printNumber(i);
 }
-print max(6,6);
