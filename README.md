@@ -75,7 +75,11 @@ Consider the input `1 + a(12)`. I use whitespace as a delimiter and to make my l
     ```
 As a result, my grammar in `cfg-v3.txt` is ambiguous which means I won't be able to correctly parse it.
 
-### SOLUTION: Working on it
-lol
+### SOLUTION: Semicolon
+The solution required another modification of my grammar: the introduction of the semicolon. The root of the problem was 
+that I couldn't tell where one line ends and another starts simply from a sequence of tokens. To solve this, I introduced
+the familiar semicolon to denote the end of a line. It's not ideal since I really don't like semicolons in programming
+languages, but it does work for the time being.
+
 
 ***
