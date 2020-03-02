@@ -197,6 +197,18 @@ class Evaluator:
       if node.children[1].type == Tokens.SEMICOLON:
         return self._evaluate(node.children[0])
 
+  def _callfunc(self, node):
+    #TODO: children[4] is the PIPE
+    function_name = node.children[0].token.lexeme
+    function_node = self._get_from_functable(function_name)
+    self._evaluate(node.children[2])
+    function_evaluator = FunctionEvaluator(
+      function_node,
+      self._evaluate(node.children[2]),
+      self.functable
+    )
+    return function_evaluator.evaluate_tree()
+
   def _args(self, node):
     # Returns an array of argument values in order
     length = len(node.children)
@@ -354,6 +366,8 @@ class Evaluator:
           return True
         elif node.children[0].type == Tokens.FALSE:
           return False
+        elif node.children[0].type == Nonterminals.CALLFUNC:
+          return self._callfunc(node.children[0])
       elif length == 2:
         # Unary minus
         return -1 * self._term(node.children[1])
@@ -364,23 +378,6 @@ class Evaluator:
         ):
           # Expression in brackets
           return self._bexpr(node.children[1])
-      elif length == 4:
-        is_function_call = (
-          node.children[0].type == Tokens.ID
-          and node.children[1].type == Tokens.LBRAC
-          and node.children[2].type == Nonterminals.ARGS
-          and node.children[3].type == Tokens.RBRAC
-        )
-        if is_function_call:
-          function_name = node.children[0].token.lexeme
-          function_node = self._get_from_functable(function_name)
-          self._evaluate(node.children[2])
-          function_evaluator = FunctionEvaluator(
-            function_node,
-            self._evaluate(node.children[2]),
-            self.functable
-          )
-          return function_evaluator.evaluate_tree()
 
   ###########
   # Helpers #

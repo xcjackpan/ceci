@@ -262,7 +262,37 @@ class ParseTree:
     retnode.add_child(self._bexpr())
     self._munch_and_add([Tokens.SEMICOLON], retnode)
     return retnode
-    # TODO: Other statement types
+
+  def _pipe(self):
+    retnode = Node(Nonterminals.PIPE)
+    munched = False
+    try:
+      munched = self._munch_and_add([Tokens.INTO], retnode)
+      retnode.add_child(self._callfunc())
+    except MunchException:
+      if munched:
+        raise ParseException
+      return retnode
+
+  def _callfunc(self):
+    retnode = Node(Nonterminals.CALLFUNC)
+    munched = False
+    try:
+      munched = self._munch_and_add_chain(
+        [
+          [Tokens.ID],
+          [Tokens.LBRAC],
+        ],
+        retnode,
+      )
+      retnode.add_child(self._args())
+      munched = self._munch_and_add([Tokens.RBRAC], retnode)
+      retnode.add_child(self._pipe())
+      return retnode
+    except MunchException:
+      if munched:
+        raise ParseException
+      return retnode
 
   def _args(self):
     retnode = Node(Nonterminals.ARGS)
@@ -490,22 +520,20 @@ class ParseTree:
       pass
 
     try:
-      # TODO: Need to tell the difference between ID and function call
-      self._munch_and_add([Tokens.ID], retnode)
-      peeked = self._peek(1)
-      if (peeked[0] == Tokens.LBRAC):
-        try:
-          munched = False
-          munched = self._munch_and_add([Tokens.LBRAC], retnode)
-          retnode.add_child(self._args())
-          munched = self._munch_and_add([Tokens.RBRAC], retnode)
-          return retnode
-        except MunchException:
-          # Since we peeked, we are guaranteed to munch LBRAC
-          raise ParseException
-      return retnode
+      munched = False
+      peeked = self._peek(2)
+      if (
+        peeked[0] == Tokens.ID
+        and peeked[1] == Tokens.LBRAC
+      ):
+        retnode.add_child(self._callfunc())
+        return retnode
+      else:
+        self._munch_and_add([Tokens.ID], retnode)
+        return retnode
     except MunchException:
-      pass
+      if munched:
+        raise ParseException
       
     try:
       self._munch_and_add([Tokens.MINUS], retnode)
