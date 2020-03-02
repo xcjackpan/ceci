@@ -195,10 +195,7 @@ class Evaluator:
         print(str(result))
     elif length == 2:
       if node.children[1].type == Tokens.SEMICOLON:
-        if node.children[0].type == Nonterminals.EXPR:
-          return self._expr(node.children[0])
-        elif node.children[0].type == Nonterminals.TEST:
-          return self._test(node.children[0])
+        return self._evaluate(node.children[0])
 
   def _args(self, node):
     # Returns an array of argument values in order

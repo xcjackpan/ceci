@@ -64,7 +64,7 @@ class ParseTree:
 
   def _next_token(self):
     self.pos += 1
-    if (self.pos > self.length):
+    if (self.pos == self.length):
       raise MunchException("Out of bounds!")
     return
 
@@ -88,6 +88,18 @@ class ParseTree:
     munched = self._munch(token_types)
     retnode.add_child(Node(munched.token, munched))
     return True
+
+  def _peek(self, n):
+    # Takes a peek at the next n tokens ahead without munching them
+    # Hacky but it's too late to redesign my grammar :(
+    tmp = self.pos
+    tokens = []
+    for i in range(0, n):
+      if (tmp == self.length):
+        raise MunchException("Out of bounds!")
+      tokens.append(self.program[tmp].token)
+      tmp += 1
+    return tokens
 
   ##################
   # Building nodes #
@@ -211,9 +223,15 @@ class ParseTree:
       retnode = Node(Nonterminals.STATEMENT)
 
     try:
-      # Assigning a variable
-      # TODO: Consider prefixes of the following
-      # `a` vs `a = 10`
+      # Need to peek since reassignments and 
+      # function calls share a prefix in ID :(
+      peeked = self._peek(2)
+      if not (
+        peeked[0] == Tokens.ID
+        and peeked[1] == Tokens.BECOMES
+      ):
+        raise MunchException("Dummy exception!")
+
       munched = self._munch_and_add_chain(
         [
           [Tokens.ID],
@@ -472,16 +490,18 @@ class ParseTree:
       pass
 
     try:
-      # Need to tell the difference between ID and function call
+      # TODO: Need to tell the difference between ID and function call
       self._munch_and_add([Tokens.ID], retnode)
-      try:
-        munched = False
-        munched = self._munch_and_add([Tokens.LBRAC], retnode)
-        retnode.add_child(self._args())
-        munched = self._munch_and_add([Tokens.RBRAC], retnode)
-        return retnode
-      except MunchException:
-        if munched:
+      peeked = self._peek(1)
+      if (peeked[0] == Tokens.LBRAC):
+        try:
+          munched = False
+          munched = self._munch_and_add([Tokens.LBRAC], retnode)
+          retnode.add_child(self._args())
+          munched = self._munch_and_add([Tokens.RBRAC], retnode)
+          return retnode
+        except MunchException:
+          # Since we peeked, we are guaranteed to munch LBRAC
           raise ParseException
       return retnode
     except MunchException:
