@@ -197,17 +197,24 @@ class Evaluator:
       if node.children[1].type == Tokens.SEMICOLON:
         return self._evaluate(node.children[0])
 
-  def _callfunc(self, node):
-    #TODO: children[4] is the PIPE
+  def _pipe(self, node, pipe_input):
+    return self._callfunc(node.children[1], pipe_input)
+
+  def _callfunc(self, node, pipe_input=None):
     function_name = node.children[0].token.lexeme
     function_node = self._get_from_functable(function_name)
-    self._evaluate(node.children[2])
     function_evaluator = FunctionEvaluator(
       function_node,
       self._evaluate(node.children[2]),
       self.functable
     )
-    return function_evaluator.evaluate_tree()
+    if pipe_input is not None:
+      function_evaluator._add_pipe_input(pipe_input)
+    retval = function_evaluator.evaluate_tree()
+    if len(node.children[4].children) > 0:
+      return self._pipe(node.children[4], retval)
+    else:
+      return retval
 
   def _args(self, node):
     # Returns an array of argument values in order
@@ -413,3 +420,6 @@ class FunctionEvaluator(Evaluator):
       raise EvaluateException("Didn't get params!")
     params = self._evaluate(params_node)
     return dict(zip(params, args))
+
+  def _add_pipe_input(self, pipe_input):
+    self.symtable["pipe"] = pipe_input

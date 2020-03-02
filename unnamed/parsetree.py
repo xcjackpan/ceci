@@ -269,12 +269,14 @@ class ParseTree:
     try:
       munched = self._munch_and_add([Tokens.INTO], retnode)
       retnode.add_child(self._callfunc())
+      return retnode
     except MunchException:
       if munched:
         raise ParseException
       return retnode
 
   def _callfunc(self):
+    #TODO: single func call with no semicolon is not a parse error
     retnode = Node(Nonterminals.CALLFUNC)
     munched = False
     try:

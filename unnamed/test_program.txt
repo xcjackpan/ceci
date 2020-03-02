@@ -1,7 +1,9 @@
-function printNumber(a) {
-  print a;
+function constantFive() {
+  return 5;
 }
-let a = 0;
-loop(let i = 0; i < 10; i = i + 1;) {
-  printNumber(i);
+function printPipeAndAddOne() {
+  print pipe;
+  return pipe + 1;
 }
+
+constantFive() into printPipeAndAddOne() into printPipeAndAddOne() into printPipeAndAddOne();

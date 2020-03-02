@@ -27,7 +27,7 @@ class Tokens:
   DIV = 25
   EXP = 26
   INTO = 27
-  PIPE = 28
+  #PIPE = 28
   NUM = 29
   EQ = 30
   NEQ = 31
@@ -71,7 +71,7 @@ class Tokens:
     "/": DIV,
     "^": EXP,
     "into": INTO,
-    "pipe": PIPE,
+    #"pipe": PIPE,
     "==": EQ,
     "!=": NEQ,
     ">=": GEQ,

@@ -69,11 +69,10 @@ simple6 = """
 simple7 = """
             function printNumber(a) {
               print a;
-              return 0;
             }
             let a = 0;
             loop(let i = 0; i < 10; i = i + 1;) {
-              a = printNumber(i);
+              printNumber(i);
             }
           """
 earlyreturn = """
