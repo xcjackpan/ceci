@@ -42,6 +42,7 @@ class Tokens:
   ELSE = 40
   STRING = 41
   SEMICOLON = 42
+  PASS = 43
 
   LEXEMES = {
     "//": COMMENT,
@@ -84,6 +85,7 @@ class Tokens:
     "elif": ELIF,
     "else": ELSE,
     ";": SEMICOLON,
+    "pass": PASS,
   }
 
 class Token:

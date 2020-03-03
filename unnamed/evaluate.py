@@ -198,6 +198,9 @@ class Evaluator:
         return self._evaluate(node.children[0])
 
   def _pipe(self, node, pipe_input):
+    length = len(node.children)
+    if length == 0:
+      return pipe_input
     return self._callfunc(node.children[1], pipe_input)
 
   def _callfunc(self, node, pipe_input=None):
@@ -211,10 +214,7 @@ class Evaluator:
     if pipe_input is not None:
       function_evaluator._add_pipe_input(pipe_input)
     retval = function_evaluator.evaluate_tree()
-    if len(node.children[4].children) > 0:
-      return self._pipe(node.children[4], retval)
-    else:
-      return retval
+    return self._pipe(node.children[-1], retval)
 
   def _args(self, node):
     # Returns an array of argument values in order
@@ -299,9 +299,8 @@ class Evaluator:
       elif op == Tokens.GEQ:
         return left >= right
     elif length == 2:
-      lexeme = self._evaluate(node.children[1])
-      # TODO: Type error checking!
-      return True if lexeme is "False" else "True"
+      test = self._evaluate(node.children[1])
+      return not test
     elif length == 1:
       # Must be just an expr
       return self._evaluate(node.children[0])
@@ -360,31 +359,38 @@ class Evaluator:
     if length >= 1:
       if node.children[0].type == Tokens.QUOTE:
         ret = ""
-        for node in node.children[1:-1]:
+        for node in node.children[1:-2]:
           ret = ret + " " + node.token.lexeme
         return ret[1:]
       elif length == 1:
-        # Either an ID or a num
-        if node.children[0].type == Tokens.ID:
-          return self._get_from_symtable(node.children[0].token.lexeme)
-        elif node.children[0].type == Tokens.NUM:
-          return int(node.children[0].token.lexeme)
-        elif node.children[0].type == Tokens.TRUE:
-          return True
-        elif node.children[0].type == Tokens.FALSE:
-          return False
-        elif node.children[0].type == Nonterminals.CALLFUNC:
+        if node.children[0].type == Nonterminals.CALLFUNC:
           return self._callfunc(node.children[0])
       elif length == 2:
-        # Unary minus
-        return -1 * self._term(node.children[1])
+        # Either an ID or a num
+        if node.children[0].type == Tokens.ID:
+          retval = self._get_from_symtable(node.children[0].token.lexeme)
+          return self._pipe(node.children[-1], retval)
+        elif node.children[0].type == Tokens.NUM:
+          retval = int(node.children[0].token.lexeme)
+          return self._pipe(node.children[-1], retval)
+        elif node.children[0].type == Tokens.TRUE:
+          retval = True
+          return self._pipe(node.children[-1], retval)
+        elif node.children[0].type == Tokens.FALSE:
+          retval = False
+          return self._pipe(node.children[-1], retval)
       elif length == 3:
+        # Unary minus
+        retval = -1 * self._term(node.children[1])
+        return self._pipe(node.children[-1], retval)
+      elif length == 4:
         if (
           node.children[0].type == Tokens.LBRAC
           and node.children[2].type == Tokens.RBRAC
         ):
           # Expression in brackets
-          return self._bexpr(node.children[1])
+          retval = self._bexpr(node.children[1])
+          return self._pipe(node.children[-1], retval)
 
   ###########
   # Helpers #

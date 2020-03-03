@@ -3,6 +3,8 @@ program -> BOF statement statements EOF
 statements -> statement statements
 statements ->
 
+statement -> PASS
+
 statement -> FUNCTION ID LBRAC args RBRAC LCURL statements RCURL
 args -> bexpr COMMA args
 args ->
@@ -59,10 +61,15 @@ pow -> term pow'
 pow' -> EXP term pow'
 pow' ->
 
-term -> ID
-term -> DIGIT
-term -> LBRAC bexpr RBRAC
-term -> MINUS term
-term -> True
-term -> False
-term -> QUOTE STRING .... QUOTE
+term -> ID pipe
+term -> DIGIT pipe
+term -> LBRAC bexpr RBRAC pipe
+term -> MINUS term pipe
+term -> True pipe
+term -> False pipe
+term -> QUOTE STRING .... QUOTE pipe
+term -> callfunc
+
+callfunc -> ID LBRAC ARGS RBRAC pipe
+pipe -> INTO callfunc
+pipe ->

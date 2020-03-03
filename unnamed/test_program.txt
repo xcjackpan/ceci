@@ -1,9 +1,5 @@
-function constantFive() {
-  return 5;
-}
-function printPipeAndAddOne() {
+function isTrue() {
   print pipe;
-  return pipe + 1;
+  return pipe == "True";
 }
-
-constantFive() into printPipeAndAddOne() into printPipeAndAddOne() into printPipeAndAddOne();
+print (not (3 > 5)) into isTrue();

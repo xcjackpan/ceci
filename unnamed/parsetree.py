@@ -119,6 +119,21 @@ class ParseTree:
     retnode = Node(Nonterminals.STATEMENT)
     statement_tokens = []
     munched = False
+
+    try:
+      munched = self._munch_and_add_chain(
+        [
+          [Tokens.PASS],
+          [Tokens.SEMICOLON],
+        ],
+        retnode,
+      )
+      return retnode
+    except MunchException:
+      if munched:
+        raise ParseException
+      retnode = Node(Nonterminals.STATEMENT)
+
     try:
       munched = self._munch_and_add([Tokens.RETURN], retnode)
       retnode.add_child(self._bexpr())
@@ -505,18 +520,21 @@ class ParseTree:
         except MunchException:
           self._munch_and_add([Tokens.STRING], retnode)
 
+      retnode.add_child(self._pipe())
       return retnode
     except MunchException:
       pass
 
     try:
       self._munch_and_add([Tokens.TRUE, Tokens.FALSE], retnode)
+      retnode.add_child(self._pipe())
       return retnode
     except MunchException:
       pass
 
     try:
       self._munch_and_add([Tokens.NUM], retnode)
+      retnode.add_child(self._pipe())
       return retnode
     except MunchException:
       pass
@@ -532,6 +550,7 @@ class ParseTree:
         return retnode
       else:
         self._munch_and_add([Tokens.ID], retnode)
+        retnode.add_child(self._pipe())
         return retnode
     except MunchException:
       if munched:
@@ -540,6 +559,7 @@ class ParseTree:
     try:
       self._munch_and_add([Tokens.MINUS], retnode)
       retnode.add_child(self._term())
+      retnode.add_child(self._pipe())
       return retnode
     except MunchException:
       # Must be LBRAC expr RBRAC
@@ -548,4 +568,5 @@ class ParseTree:
     self._munch_and_add([Tokens.LBRAC], retnode)
     retnode.add_child(self._bexpr())
     self._munch_and_add([Tokens.RBRAC], retnode)
+    retnode.add_child(self._pipe())
     return retnode
