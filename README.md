@@ -27,8 +27,23 @@ You can chain pipes:
   function double() {
     return pipe * 2;
   }
-  print 5 into addOne() into double();
+  print 2 into double() into double() into double() into double();
 ```
 ```
-  12
+  32
+```
+And you can even do wackier stuff:
+```
+  function printAndAdd() {
+    print pipe;
+    return pipe + 1;
+  }
+  loop(let i = 0; i < 3; i = i into printAndAdd();) {
+    pass;
+  }
+```
+```
+  0
+  1
+  2
 ```

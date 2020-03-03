@@ -1,5 +1,7 @@
-function isTrue() {
-  print pipe;
-  return pipe == "True";
-}
-print (not (3 > 5)) into isTrue();
+  function printAndAdd() {
+    print pipe;
+    return pipe + 1;
+  }
+  loop(let i = 0; i < 3; i = i into printAndAdd();) {
+    pass;
+  }
