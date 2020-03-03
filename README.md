@@ -12,7 +12,7 @@
 
 ### Ceci's Gimmick
 Ceci's gimmick (and [namesake](https://en.wikipedia.org/wiki/The_Treachery_of_Images)) is the concept of **piping**. 
-With piping, whatever value you send `into` a function is accessible within that function as the `pipe` variable.:
+With piping, whatever value you send `into` a function is accessible within that function as the `pipe` variable:
 ```
   function addOne() {
     return pipe + 1;
