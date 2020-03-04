@@ -47,3 +47,58 @@ And you can even do wackier stuff:
   1
   2
 ```
+
+***
+
+### Other Stuff
+Ceci also does other normal programming language things. There's math:
+```
+  print 1 - (1 + 1) * (2 ^ 2);
+```
+```
+  -7
+```
+
+We can do if-statements and regular functions:
+```
+  function whichNumberIsGreater(a, b) {
+    let printVal = "None";
+    if (a > b) {
+      print a;
+    } elif (b > a) {
+      print b;
+    } else {
+      print "They're equal.";
+    }
+  }
+  whichNumberIsGreater(2,1);
+  whichNumberIsGreater(2,3);
+  whichNumberIsGreater(2,2);
+```
+```
+  2
+  3
+  They're equal.
+```
+
+There's also variables and loops (except for/while both use the same keyword and are differentiated by the number of expressions passed in):
+```
+  let a = 0;
+  loop (a < 3) {
+    a = a + 1;
+    print a;
+  }
+  print "======";
+  loop (let i = 0; i < 3; i = i + 1;) {
+    print i;
+  }
+```
+```
+  0
+  1
+  2
+  ======
+  0
+  1
+  2
+```

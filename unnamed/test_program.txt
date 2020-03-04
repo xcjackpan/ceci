@@ -1,7 +1,13 @@
-  function printAndAdd() {
-    print pipe;
-    return pipe + 1;
+  function whichNumberIsGreater(a, b) {
+    let printVal = "None";
+    if (a > b) {
+      print a;
+    } elif (b > a) {
+      print b;
+    } else {
+      print "They're equal.";
+    }
   }
-  loop(let i = 0; i < 3; i = i into printAndAdd();) {
-    pass;
-  }
+  whichNumberIsGreater(2,1);
+  whichNumberIsGreater(2,3);
+  whichNumberIsGreater(2,2);
