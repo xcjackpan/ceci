@@ -62,7 +62,6 @@ Ceci also does other normal programming language things. There's math:
 We can do if-statements and regular functions:
 ```
   function whichNumberIsGreater(a, b) {
-    let printVal = "None";
     if (a > b) {
       print a;
     } elif (b > a) {
@@ -102,3 +101,45 @@ There's also variables and loops (except for/while both use the same keyword and
   1
   2
 ```
+
+Here's a classic Fibonacci function taken straight from a unit test:
+```
+  function fib(n) {
+    let a = 0;
+    let b = 1;
+    let next = 0;
+    loop(let i = 1; i < n; i = i + 1;) {
+      next = a + b;
+      a = b;
+      b = next;
+    }
+    return b;
+  }
+  print fib(10);
+```
+```
+  55
+```
+
+And here's a recursive version of Fibonacci if you're into that:
+```
+  function fib(n) {
+    if (n <= 1) {
+      return n;
+    }
+    return fib(n-1) + fib(n-2);
+  }
+  print fib(10);
+```
+```
+  55
+```
+
+### Wanna try it yourself?
+Here are your options:
+1. Clone the repo and run the interpreter directly
+  - To run unittests: `python -m unitttest`
+  - To run shell-mode: `python -m unnamed.unnamed`
+  - To run an input program: `python -m unnamed.unnamed < {FILE_NAME_OF_INPUT_PROGRAM}`
+
+2. There'll be a web environment soon -- WIP!

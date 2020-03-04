@@ -1,13 +1,7 @@
-  function whichNumberIsGreater(a, b) {
-    let printVal = "None";
-    if (a > b) {
-      print a;
-    } elif (b > a) {
-      print b;
-    } else {
-      print "They're equal.";
+  function fib(n) {
+    if (n <= 1) {
+      return n;
     }
+    return fib(n-1) + fib(n-2);
   }
-  whichNumberIsGreater(2,1);
-  whichNumberIsGreater(2,3);
-  whichNumberIsGreater(2,2);
+  print fib(10);
