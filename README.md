@@ -137,9 +137,9 @@ And here's a recursive version of Fibonacci if you're into that:
 
 ### Wanna try it yourself?
 Here are your options:
-1. Clone the repo and run the interpreter directly
+* Clone the repo and run the interpreter directly
   * To run unittests: `python -m unitttest`
   * To run shell-mode: `python -m unnamed.unnamed`
   * To run an input program: `python -m unnamed.unnamed < {FILE_NAME_OF_INPUT_PROGRAM}`
 
-2. There'll be a web environment soon -- WIP!
+* There'll be a web environment soon -- WIP!
