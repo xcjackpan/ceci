@@ -142,4 +142,4 @@ Here are your options:
   * To run shell-mode: `python -m unnamed.unnamed`
   * To run an input program: `python -m unnamed.unnamed < {FILE_NAME_OF_INPUT_PROGRAM}`
 
-* There'll be a web environment soon -- WIP!
+* There'll be a web environment soon -- WIP
