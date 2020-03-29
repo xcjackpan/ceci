@@ -1,0 +1,5 @@
+.info-bar {
+  width: 25vw;
+  height: 100%;
+  flex-grow: 2;
+}

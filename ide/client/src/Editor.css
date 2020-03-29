@@ -1,0 +1,15 @@
+.editor {
+  width: 75vw;
+  height: 100%;
+}
+
+.editor textarea {
+  font-family: monospace;
+  font-size: 1.5em;
+  background-color: #708090;
+  color: white;
+  border: none;
+  width: 100%;
+  height: 100%;
+  resize: none;
+}
