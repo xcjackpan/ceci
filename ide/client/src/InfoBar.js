@@ -4,7 +4,7 @@ import './InfoBar.css';
 function InfoBar() {
   return (
     <div className="info-bar">
-      INFO BAR
+      <p>Hi there.</p>
     </div>
   );
 }

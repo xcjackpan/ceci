@@ -1,5 +1,8 @@
 .info-bar {
   width: 25vw;
   height: 100%;
-  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 25px;
 }

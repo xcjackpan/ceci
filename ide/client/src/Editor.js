@@ -7,18 +7,18 @@ function handleKeyDown(e, code, updateCode) {
     e.preventDefault();
     updateCode(code + tab)
   } else if  (e.key === 'Enter') {
-    let insert = e.target.selectionStart;
-    let start = insert;
+    let insert = e.target.selectionEnd;
+    let pos = insert;
     let indent = '';
-    while (start >= 0) {
-      if (code[start] === '\n') {
+    while (pos >= 0) {
+      if (code[pos] === '\n') {
         break;
-      } else if (code[start] === '\t') {
+      } else if (code[pos] === '\t') {
         indent += '\t';
       } else {
         indent = '';
       }
-      start--;
+      pos--;
     }
     updateCode([code.slice(0, insert), '\n', indent, code.slice(insert)].join(''));
     e.preventDefault();
