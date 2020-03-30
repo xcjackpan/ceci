@@ -3,6 +3,25 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  text-align: left;
+  align-items: center;
   padding: 25px;
+}
+
+.info-bar .run {
+  text-align: center;
+  padding: 20px;
+  background-color: green;
+  border-radius: 15px;
+  width: 50%;
+}
+
+.info-bar .run:hover {
+  cursor: pointer;
+}
+
+.info-bar .run .run-icon {
+  padding: 0;
+  margin: 0;
+  font-size: 1.5em;
+  color: white;
 }

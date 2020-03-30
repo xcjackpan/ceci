@@ -9,6 +9,8 @@ venv
 # REACT
 # -----
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+build
+ide/api/ceci
 
 # dependencies
 /.pnp

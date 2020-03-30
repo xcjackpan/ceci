@@ -1,10 +1,14 @@
 import React from 'react';
 import './InfoBar.css';
+import { Play } from 'react-feather';
 
-function InfoBar() {
+function InfoBar(props) {
+  const {sendCode} = props;
   return (
     <div className="info-bar">
-      <p>Hi there.</p>
+      <div className="run" onClick={sendCode}>
+        <Play className="run-icon" />
+      </div>
     </div>
   );
 }

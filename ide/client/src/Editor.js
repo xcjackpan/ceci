@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Editor.css';
 
 function handleKeyDown(e, code, updateCode) {
@@ -25,8 +25,8 @@ function handleKeyDown(e, code, updateCode) {
   }
 }
 
-function Editor() {
-  const [code, updateCode] = useState("");
+function Editor(props) {
+  const {code, updateCode} = props
   return (
     <div className="editor">
       <textarea 
