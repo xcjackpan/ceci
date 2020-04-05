@@ -56,6 +56,9 @@ function Editor(props) {
         }}
         value={code}
       />
+      <div className="output">
+        {props.output}
+      </div>
     </div>
   );
 }

@@ -7,21 +7,48 @@
   padding: 25px;
 }
 
-.info-bar .run {
-  text-align: center;
-  padding: 20px;
-  background-color: green;
-  border-radius: 15px;
-  width: 50%;
+.info-bar .buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.info-bar .run:hover {
+.info-bar .buttons .button {
+  text-align: center;
+  margin: 15px 30px;
+  width: 50%;
+  background-color: #EDF0DA;
+}
+
+.info-bar .buttons .button:hover {
   cursor: pointer;
 }
 
-.info-bar .run .run-icon {
+.info-bar .text {
   padding: 0;
   margin: 0;
   font-size: 1.5em;
-  color: white;
+  padding: 10px 0px;
+}
+
+.info-bar .buttons .run {
+  transition: border-bottom 0.25s ease;
+  border-bottom: 5px solid transparent;
+  color: green;
+}
+
+.info-bar .buttons .run:hover {
+  border-bottom: 5px solid green;
+}
+
+.info-bar .buttons .clear {
+  transition: border-bottom 0.25s ease;
+  border-bottom: 5px solid transparent;
+  color: #AA4465;
+}
+
+.info-bar .buttons .clear:hover {
+  border-bottom: 5px solid #AA4465;
 }
