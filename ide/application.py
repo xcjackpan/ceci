@@ -57,4 +57,6 @@ def run_code():
     })
 
 application.debug=True
-application.run()
+
+if __name__ == "__main__":
+    application.run()
