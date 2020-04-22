@@ -1,10 +1,11 @@
 .info-bar {
   width: 25vw;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 25px;
+  overflow-y: auto;
 }
 
 .info-bar .buttons {
@@ -15,14 +16,14 @@
   align-items: center;
 }
 
-.info-bar .buttons .button {
+.info-bar .button {
   text-align: center;
   margin: 15px 30px;
   width: 50%;
   background-color: #EDF0DA;
 }
 
-.info-bar .buttons .button:hover {
+.info-bar .button:hover {
   cursor: pointer;
 }
 
@@ -51,4 +52,44 @@
 
 .info-bar .buttons .clear:hover {
   border-bottom: 5px solid #AA4465;
+}
+
+.info-bar .samples {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+}
+
+.info-bar .description {
+  width: 90%;
+  height: 100%;
+  text-align: left;
+  padding: 10px 40px 50px 40px;
+}
+
+.info-bar .description .heading {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.info-bar .description .text {
+  font-size: 1.2em;
+}
+
+.info-bar .description .sample {
+  margin: 8px 0px;
+  width: 50%;
+}
+
+.info-bar .sample-text {
+  padding: 10px 10px;
+  transition: border-bottom 0.25s ease;
+  border-bottom: 5px solid transparent;
+  color: #000000;
+}
+
+.info-bar .sample-text:hover {
+  border-bottom: 5px solid #000000;
 }

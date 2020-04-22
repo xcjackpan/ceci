@@ -48,7 +48,7 @@ def run_code():
             'output': out,
             'return': r.value,
         })
-    except (EvaluateException, ParseException, TokenException) as e:
+    except Exception as e:
         return jsonify({
             'error': e.message
         })

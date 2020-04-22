@@ -13,12 +13,22 @@ function App() {
       program: code,
     })
     .then(function (response) {
-      updateOutput(output + "> " + response.data.output + "\n")
+      let message = "Something went wrong! Try again in a moment."
+      if (response.data.error) {
+        message = response.data.error
+      } else if (response.data.output) {
+        message = response.data.error
+      }
+      updateOutput(output + "> " + message + "\n")
     })
   }
 
   function clearConsole() {
     updateOutput("");
+  }
+
+  function setCode(code) {
+    updateCode(code)
   }
 
   return (
@@ -31,6 +41,7 @@ function App() {
       <InfoBar 
         sendCode={() => sendCode(code)}
         clearConsole={clearConsole}
+        setCode={setCode}
       /> 
     </div>
   );
