@@ -3,11 +3,11 @@ import io
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
 from contextlib import redirect_stdout
-from .ceci.tokenizer import *
-from .ceci.cfg import *
-from .ceci.evaluate import *
+from api.ceci.tokenizer import *
+from api.ceci.cfg import *
+from api.ceci.evaluate import *
 
-application = Flask(__name__, static_folder="../client/build/static", template_folder="../client/build")
+application = Flask(__name__, static_folder="client/build/static", template_folder="client/build")
 cors = CORS(application)
 application.config['CORS_HEADERS'] = 'Content-Type'
 
