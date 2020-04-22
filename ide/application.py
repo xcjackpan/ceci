@@ -57,4 +57,4 @@ def run_code():
     })
 
 application.debug=True
-application.run(host='0.0.0.0')
+application.run()
