@@ -3,13 +3,13 @@ import io
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
 from contextlib import redirect_stdout
-from ceci.tokenizer import *
-from ceci.cfg import *
-from ceci.evaluate import *
+from .ceci.tokenizer import *
+from .ceci.cfg import *
+from .ceci.evaluate import *
 
-app = Flask(__name__, static_folder="../client/build/static", template_folder="../client/build")
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+application = Flask(__name__, static_folder="../client/build/static", template_folder="../client/build")
+cors = CORS(application)
+application.config['CORS_HEADERS'] = 'Content-Type'
 
 def preprocess(line):
   line = line.replace("(", " ( ")
@@ -20,11 +20,11 @@ def preprocess(line):
   line = line.replace("\"", " \" ")
   return line
 
-@app.route("/")
+@application.route("/")
 def main():
     return render_template('index.html')
 
-@app.route("/run-code", methods=['POST'])
+@application.route("/run-code", methods=['POST'])
 @cross_origin()
 def run_code():
     payload = request.json["program"]
@@ -56,8 +56,5 @@ def run_code():
         'output': out
     })
 
-
-print('Starting Flask!')
-
-app.debug=True
-app.run(host='0.0.0.0')
+application.debug=True
+application.run(host='0.0.0.0')
