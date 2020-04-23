@@ -151,7 +151,7 @@ function InfoBar(props) {
           <li>You need a semicolon after the last expression in a "for" loop.</li>
         </ul>
         <br/>
-        <p>
+        <p className="text">
           If you're interested in how I built Ceci, I kept a doc on everything
           I learned along the way. <a href="https://github.com/xcjackpan/ceci/blob/master/learnings.md">Take a look!</a>
         </p>

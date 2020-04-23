@@ -9,7 +9,7 @@ function App() {
   const [output, updateOutput] = useState([]);
 
   function sendCode(code) {
-    axios.post('http://localhost:5000/run-code', {
+    axios.post('/run-code', {
       program: code,
     })
     .then(function (response) {
