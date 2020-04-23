@@ -17,7 +17,7 @@ function App() {
       if (response.data.error) {
         message = response.data.error
       } else if (response.data.output) {
-        message = response.data.error
+        message = response.data.output
       }
       updateOutput(output + "> " + message + "\n")
     })

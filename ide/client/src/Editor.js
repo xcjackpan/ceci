@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Editor.css';
 
 let cursor = 0;
@@ -13,13 +13,13 @@ function handleKeyDown(e, code, updateCode) {
     return insert + 1;
   } else if  (e.key === 'Enter') {
     let insert = e.target.selectionEnd;
-    let pos = insert;
+    let pos = insert - 1;
     let indent = '';
     while (pos >= 0) {
       if (code[pos] === '\n') {
         break;
-      } else if (code[pos] === '\t') {
-        indent += '\t';
+      } else if (code[pos] === tab) {
+        indent += tab;
       } else {
         indent = '';
       }
@@ -27,26 +27,30 @@ function handleKeyDown(e, code, updateCode) {
     }
     updateCode([code.slice(0, insert), '\n', indent, code.slice(insert)].join(''));
     e.preventDefault();
-    return insert + 1;
+    return insert + indent.length + 1;
   }
   return -1;
 }
 
 function Editor(props) {
   const {code, updateCode} = props;
-  let inputRef = null;
+  let inputRef = useRef(null);
+  let outputRef = useRef(null)
 
   useEffect(() => {
-    if (inputRef && shouldUpdateCursor) {
-      inputRef.selectionEnd = cursor;
+    if (inputRef.current && shouldUpdateCursor) {
+      inputRef.current.selectionEnd = cursor;
     }
   });
+  useEffect(() => {
+    outputRef.current.scrollTop = outputRef.current.scrollHeight
+  }, [props.output]);
 
   return (
     <div className="editor">
       <textarea 
         name="input"
-        ref={(textarea) => {inputRef = textarea}}
+        ref={inputRef}
         onChange={(e) => {
           updateCode(e.target.value);
         }}
@@ -56,7 +60,7 @@ function Editor(props) {
         }}
         value={code}
       />
-      <div className="output">
+      <div className="output" ref={outputRef}>
         {props.output}
       </div>
     </div>

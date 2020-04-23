@@ -78,6 +78,10 @@
   font-size: 1.2em;
 }
 
+.info-bar .description ul {
+  font-size: 1.2em;
+}
+
 .info-bar .description .sample {
   margin: 8px 0px;
   width: 50%;
