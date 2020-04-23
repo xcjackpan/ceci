@@ -117,24 +117,39 @@ function InfoBar(props) {
         </div>
       </div>
       <div className="description">
-        <p className="heading">This is Ceci.</p>
         <p className="text">
-          Ceci's a programming language I made for fun. Here, you can
-          play with some of Ceci's gimmicks and see it in action.
+          Ceci's a programming language I made for fun. This is a quick and dirty web app
+          running the Ceci interpreter.
+        </p>
+        <p className="heading">Piping</p>
+        <p className="text">
+          Ceci's gimmick. Any expression can be piped into a function using the keyword <span className="code">into</span>.
+          That expression is accessible from within the function as the variable <span className="code">pipe</span>.
+        </p>
+        <p className="heading">Syntax</p>
+        <p className="text">
+          <i>Loops</i>: For/while loops both use the keyword <span className="code">loop</span>, differentiated by the expressions passed in. You'll need a
+          semicolon after the last expression in a for-loop.
           <br/>
           <br/>
-          To make this interpreter, I designed and created from scratch:
+          <i>If-statements</i>: Uses keywords <span className="code">if</span>, <span className="code">elif</span>, and <span className="code">else</span>.
+          <br/>
+          <br/>
+          <i>Variables</i>: No static types. Declared with <span className="code">let</span>.
+          <br/>
+          <br/>
+          <i>Functions</i>: Declared with <span className="code">function</span>. Called using brackets.
+          <br/>
+          <br/>
+          <i>Scoping</i>: Functions have their own scope. Loops and if-statements do not.
+          <br/>
+          <br/>
+          <i>Printing</i>: Uses keyword <span className="code">print</span>. Curly brackets not needed.
+          <br/>
+          <br/>
+          <i>Other syntax</i>: Use curly-braces to enclose blocks and semicolons to end lines.
         </p>
-        <ul>
-          <li>a CFG for the language</li>
-          <li>a tokenizer</li>
-          <li>an LL(1)/recursive-descent parser</li>
-          <li>an evaluator</li>
-        </ul>
-        <br/>
-        <p className="text">
-          Here are some code samples as a jumping-off point:
-        </p>
+        <p className="heading">Code Samples</p>
         <div className="samples">
           {
             codeSamples.map((elem) => {
@@ -142,18 +157,12 @@ function InfoBar(props) {
             })
           }
         </div>
+        <p className="heading">More info</p>
         <p className="text">
-          Few other things to note:
-        </p>
-        <ul>
-          <li>Ceci's still a WIP! There are no arrays/objects yet.</li>
-          <li>Both "for" and "while" loops use the same keyword: "loop". They are differentiated by the expressions given</li>
-          <li>You need a semicolon after the last expression in a "for" loop.</li>
-        </ul>
-        <br/>
-        <p className="text">
-          If you're interested in how I built Ceci, I kept a doc on everything
-          I learned along the way. <a href="https://github.com/xcjackpan/ceci/blob/master/learnings.md">Take a look!</a>
+          <a href="https://github.com/xcjackpan/ceci/">Source code</a>
+          <br/>
+          <br/>
+          <a href="https://github.com/xcjackpan/ceci/blob/master/learnings.md">What I learned building Ceci</a>
         </p>
       </div>
     </div>
