@@ -2,7 +2,7 @@
 
 ***
 
-**Ceci** (aka Unnamed) is a programming language I designed for fun. This is an interpreter for Ceci built in Python (double-interpretedness, I know). It's composed of:
+**Ceci** (aka **Unnamed**) is a programming language I designed for fun. This is an interpreter for Ceci built in Python (double-interpretedness, I know). It's composed of:
   - a tokenizer
   - a CFG I built from scratch
   - an LL(1)/recursive-descent parser
